@@ -1,2 +1,2 @@
-default-jdk
+openjdk-21-jdk
 gradle
