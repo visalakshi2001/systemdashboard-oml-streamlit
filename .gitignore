@@ -1,0 +1,9 @@
+reports/
+progdash/
+__pycache__/
+**/__pycache__
+
+omltemplateproject/.fuseki
+omltemplateproject/.gradle
+omltemplateproject/build
+

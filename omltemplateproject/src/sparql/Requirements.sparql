@@ -1,0 +1,40 @@
+PREFIX rdfs:		<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dc:			<http://purl.org/dc/elements/1.1/>
+PREFIX xsd:			<http://www.w3.org/2001/XMLSchema#>
+
+PREFIX foundation:	<http://uaontologies.com/UA_Foundation/UA_Foundation#>
+
+PREFIX agent:	<http://uaontologies.com/UA_Core/UA_Agent#>
+PREFIX event:	<http://uaontologies.com/UA_Core/UA_Event#>
+PREFIX info:	<http://uaontologies.com/UA_Core/UA_Information#>
+PREFIX meas:	<http://uaontologies.com/UA_Core/UA_Measurement#>
+PREFIX prov:	<http://uaontologies.com/UA_Core/UA_Provenance#>
+
+PREFIX acq:		<http://uaontologies.com/UA_Domain/UA_Acquisition#>
+PREFIX data:	<http://uaontologies.com/UA_Domain/UA_DataManagement#>
+PREFIX mission:	<http://uaontologies.com/UA_Domain/UA_Mission#>
+PREFIX ms:		<http://uaontologies.com/UA_Domain/UA_ModelingAndSimulation#>
+PREFIX pm:		<http://uaontologies.com/UA_Domain/UA_ProjectManagement#>
+PREFIX req:		<http://uaontologies.com/UA_Domain/UA_Requirements#>
+PREFIX sw:		<http://uaontologies.com/UA_Domain/UA_Software#>
+PREFIX sa:		<http://uaontologies.com/UA_Domain/UA_SystemArchitecture#>
+PREFIX test:	<http://uaontologies.com/UA_Domain/UA_Test#>
+
+PREFIX temp_dec:	<http://uaontologies.com/DoD_TEMP_Framework/TEMP_Decision#>
+PREFIX temp_ear:	<http://uaontologies.com/DoD_TEMP_Framework/TEMP_ExecutionAndReporting#>
+PREFIX temp_org:	<http://uaontologies.com/DoD_TEMP_Framework/TEMP_Organization#>
+PREFIX temp_resp:	<http://uaontologies.com/DoD_TEMP_Framework/TEMP_Responsibility#>
+PREFIX temp_teo:	<http://uaontologies.com/DoD_TEMP_Framework/TEMP_TEOversight#>
+PREFIX temp_tpf:	<http://uaontologies.com/DoD_TEMP_Framework/TEMP_TestProgramFrameworks#>
+PREFIX temp_tpp:	<http://uaontologies.com/DoD_TEMP_Framework/TEMP_TestProgramPolicy#>
+PREFIX temp_tps:	<http://uaontologies.com/DoD_TEMP_Framework/TEMP_TestProgramStructure#>
+PREFIX temp_tpt:	<http://uaontologies.com/DoD_TEMP_Framework/TEMP_TestProgramTeams#>
+
+
+
+SELECT DISTINCT ?Requirement ?Text
+
+WHERE {
+     ?Requirement a req:Requirement.
+     OPTIONAL {?Requirement req:hasRequirementText ?Text} .
+}

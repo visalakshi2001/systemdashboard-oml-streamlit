@@ -1,0 +1,1798 @@
+description <http://example.com/project/uaomlfile#> as SIE523 {
+    uses <http://www.w3.org/2001/XMLSchema#> as xsd
+    uses <http://www.w3.org/2000/01/rdf-schema#> as rdfs
+    uses <http://uaontologies.com/UA_Foundation/UA_Foundation#> as foundation
+    uses <http://uaontologies.com/UA_Core/UA_Information#> as info
+    uses <http://uaontologies.com/UA_Core/UA_Event#> as event
+    uses <http://uaontologies.com/UA_Core/UA_Agent#> as agent
+    uses <http://uaontologies.com/UA_Core/UA_Measurement#> as meas
+    uses <http://uaontologies.com/UA_Core/UA_Location#> as loc
+    uses <http://uaontologies.com/UA_Core/UA_Ownership#> as own
+    uses <http://uaontologies.com/UA_Domain/UA_SystemArchitecture#> as sa
+    uses <http://uaontologies.com/UA_Domain/UA_Mission#> as mis
+    uses <http://uaontologies.com/UA_Domain/UA_Requirements#> as req
+    uses <http://uaontologies.com/UA_Domain/UA_Test#> as test
+    uses <http://uaontologies.com/UA_Domain/UA_Software#> as sw
+    uses <http://uaontologies.com/UA_Domain/UA_ProjectManagement#> as pm
+    uses <http://uaontologies.com/UA_Domain/UA_ModelingAndSimulation#> as ms
+    uses <http://uaontologies.com/UA_Domain/UA_OrbitsAndTrajectories#> as orb
+
+    extends <http://uaontologies.com/UA_Libraries/Dimensions#> as dim
+    extends <http://uaontologies.com/UA_Libraries/Units#> as units
+    extends <http://uaontologies.com/UA_Libraries/SoftwareTools#> as swt
+
+    instance GID-63854 : req:Requirement [
+        foundation:hasID "19547"
+        foundation:hasName "Temperature B"
+        foundation:hasNaturalLanguageDescription "The system shall operate in a low-temp (at most 40degF) environment for at least 100 minutes "
+        info:prescribes lego_Rover
+    ]
+    instance YumaTF_MemoryStick : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.YumaTF_MemoryStick"
+        foundation:hasName "YumaTF_MemoryStick"
+        loc:locatedAt Yuma_TestFacility
+    ]
+    instance GID-63852 : req:Requirement [
+        foundation:hasID "19545"
+        foundation:hasName "Test Strategy Duration"
+        foundation:hasNaturalLanguageDescription "The duration of the test strategy shall be no greater than 60 days "
+        info:prescribes TestStrategy
+    ]
+    instance T2_1-YumaTF_Stopwatch_Prescision : meas:Quantity [
+        foundation:hasID "T2_1-YumaTF_Stopwatch_Prescision"
+        foundation:hasName "T2_1-YumaTF_Stopwatch_Prescision"
+        foundation:specificallyDependentOn YumaTF_Stopwatch
+        meas:hasDimension dim:Time
+    ]
+    instance T2_1-YumaTF_Stopwatch_Prescision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_1-YumaTF_Stopwatch_Prescision
+        meas:hasUnit units:second
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance T2_2-Battery_Voltage_Start : meas:Quantity [
+        foundation:hasID "T2_2-Battery_Voltage_Start"
+        foundation:hasName "T2_2-Battery_Voltage_Start"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T2_2-Battery_Voltage_Start_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_2-Battery_Voltage_Start
+        meas:hasUnit units:V
+        meas:hasValue "4.69"^^rdfs:Literal
+    ]
+    instance T2_4-MtLemmonTF_Multimeter_Precision : meas:Quantity [
+        foundation:hasID "T2_4-MtLemmonTF_Multimeter_Precision"
+        foundation:hasName "T2_4-MtLemmonTF_Multimeter_Precision"
+        foundation:specificallyDependentOn MtLemmonTF_Multimeter
+        meas:hasDimension dim:Voltage
+    ]
+    instance T2_4-MtLemmonTF_Multimeter_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_4-MtLemmonTF_Multimeter_Precision
+        meas:hasUnit units:V
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance T2_1-YumaTF_TestFacility_ActualTemp : meas:Quantity [
+        foundation:hasID "T2_1-YumaTF_TestFacility_ActualTemp"
+        foundation:hasName "T2_1-YumaTF_TestFacility_ActualTemp"
+        foundation:specificallyDependentOn Yuma_TestFacility
+        meas:hasDimension dim:Temperature
+    ]
+    instance T2_1-YumaTF_TestFacility_ActualTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_1-YumaTF_TestFacility_ActualTemp
+        meas:hasUnit units:degF
+        meas:hasValue "74.5"^^rdfs:Literal
+    ]
+    instance T2_1-wheels_RotationalSpeed : meas:Quantity [
+        foundation:hasID "T2_1-wheels_RotationalSpeed"
+        foundation:hasName "T2_1-wheels_RotationalSpeed"
+        foundation:specificallyDependentOn wheels
+        meas:hasDimension dim:AngularSpeed
+    ]
+    instance T2_1-wheels_RotationalSpeed_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_1-wheels_RotationalSpeed
+        meas:hasUnit units:rpm
+        meas:hasValue "87"^^rdfs:Literal
+    ]
+    instance YumaTF_Thermometer : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.YumaTF_Thermometer"
+        foundation:hasName "YumaTF_Thermometer"
+        loc:locatedAt Yuma_TestFacility
+    ]
+    instance wheels : foundation:Object [
+        foundation:hasID "LegoRoverProject_Architecture.lego_Rover.lr_Mobility.wheels"
+        foundation:hasName "lego_Rover.lr_Mobility.wheels"
+    ]
+    instance lego_Rover_Mission : mis:Mission [
+        foundation:hasID "LegoRoverProject_Architecture.lego_Rover_Mission"
+        foundation:hasName "lego_Rover_Mission"
+        foundation:contains operator
+        foundation:contains lego_Rover_Mission_Environment
+    ]
+    instance MtLemmon_Site : foundation:Site [
+        foundation:hasID "LegoRoverProject_TestFacilities.MtLemmon_Site"
+        foundation:hasName "MtLemmon_Site"
+        foundation:contains MtLemmon_TestFacility
+    ]
+    instance Yuma_TestFacility : test:TestSite [
+        foundation:hasID "LegoRoverProject_TestFacilities.Yuma_Site.Yuma_TestFacility"
+        foundation:hasName "Yuma_Site.Yuma_TestFacility"
+    ]
+    instance Yuma_TestFacility_SysML_v2-Part-2a5de174-4dcb-4a45-a715-1d3786422036.Yuma_TestFacility_MinTemp : meas:Quantity [
+        meas:hasDimension dim:Temperature
+        foundation:specificallyDependentOn Yuma_TestFacility
+    ]
+    instance Yuma_TestFacility_SysML_v2-Part-2a5de174-4dcb-4a45-a715-1d3786422036.Yuma_TestFacility_MinTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf Yuma_TestFacility_SysML_v2-Part-2a5de174-4dcb-4a45-a715-1d3786422036.Yuma_TestFacility_MinTemp
+        meas:hasUnit units:degF
+        meas:hasValue "65"^^rdfs:Literal
+    ]
+    instance Yuma_TestFacility_SysML_v2-Part-2a5de174-4dcb-4a45-a715-1d3786422036.Yuma_TestFacility_MaxTemp : meas:Quantity [
+        meas:hasDimension dim:Temperature
+        foundation:specificallyDependentOn Yuma_TestFacility
+    ]
+    instance Yuma_TestFacility_SysML_v2-Part-2a5de174-4dcb-4a45-a715-1d3786422036.Yuma_TestFacility_MaxTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf Yuma_TestFacility_SysML_v2-Part-2a5de174-4dcb-4a45-a715-1d3786422036.Yuma_TestFacility_MaxTemp
+        meas:hasUnit units:degF
+        meas:hasValue "75"^^rdfs:Literal
+    ]
+    instance TP3 : test:TestProcedure [
+        foundation:hasID "LegoRoverProject_TestStrategy.TP3"
+        foundation:hasName "TP3"
+        info:prescribes t2_3
+        info:prescribes t2_1
+    ]
+    instance T3_1-Battery_Life : meas:Quantity [
+        foundation:hasID "T3_1-Battery_Life"
+        foundation:hasName "T3_1-Battery_Life"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Time
+    ]
+    instance T3_1-Battery_Life_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_1-Battery_Life
+        meas:hasUnit units:minute
+        meas:hasValue "114"^^rdfs:Literal
+    ]
+    instance T3_4-Battery_Voltage_End : meas:Quantity [
+        foundation:hasID "T3_4-Battery_Voltage_End"
+        foundation:hasName "T3_4-Battery_Voltage_End"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T3_4-Battery_Voltage_End_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_4-Battery_Voltage_End
+        meas:hasUnit units:V
+        meas:hasValue "0"^^rdfs:Literal
+    ]
+    instance T2_1-YumaTF_Multimeter_Precision : meas:Quantity [
+        foundation:hasID "T2_1-YumaTF_Multimeter_Precision"
+        foundation:hasName "T2_1-YumaTF_Multimeter_Precision"
+        foundation:specificallyDependentOn YumaTF_Multimeter
+        meas:hasDimension dim:Voltage
+    ]
+    instance T2_1-YumaTF_Multimeter_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_1-YumaTF_Multimeter_Precision
+        meas:hasUnit units:V
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance T3_2-wheels_RotationalSpeed : meas:Quantity [
+        foundation:hasID "T3_2-wheels_RotationalSpeed"
+        foundation:hasName "T3_2-wheels_RotationalSpeed"
+        foundation:specificallyDependentOn wheels
+        meas:hasDimension dim:AngularSpeed
+    ]
+    instance T3_2-wheels_RotationalSpeed_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_2-wheels_RotationalSpeed
+        meas:hasUnit units:rpm
+        meas:hasValue "138"^^rdfs:Literal
+    ]
+    instance t2 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t2"
+        foundation:hasName "Rover_TestStrategy.t2"
+        foundation:contains t2_4
+        foundation:contains t2_1
+        foundation:contains t2_2
+        foundation:contains t2_3
+        test:hasTestSubject lego_Rover
+    ]
+    instance T1_1-YumaTF_Stopwatch_Prescision : meas:Quantity [
+        foundation:hasID "T1_1-YumaTF_Stopwatch_Prescision"
+        foundation:hasName "T1_1-YumaTF_Stopwatch_Prescision"
+        foundation:specificallyDependentOn YumaTF_Stopwatch
+        meas:hasDimension dim:Time
+    ]
+    instance T1_1-YumaTF_Stopwatch_Prescision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_1-YumaTF_Stopwatch_Prescision
+        meas:hasUnit units:second
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance T3_2-YumaTF_Thermometer_Precision : meas:Quantity [
+        foundation:hasID "T3_2-YumaTF_Thermometer_Precision"
+        foundation:hasName "T3_2-YumaTF_Thermometer_Precision"
+        foundation:specificallyDependentOn YumaTF_Thermometer
+        meas:hasDimension dim:Temperature
+    ]
+    instance T3_2-YumaTF_Thermometer_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_2-YumaTF_Thermometer_Precision
+        meas:hasUnit units:degF
+        meas:hasValue "0.1"^^rdfs:Literal
+    ]
+    instance T3_4-MtLemmonTF_Multimeter_Precision : meas:Quantity [
+        foundation:hasID "T3_4-MtLemmonTF_Multimeter_Precision"
+        foundation:hasName "T3_4-MtLemmonTF_Multimeter_Precision"
+        foundation:specificallyDependentOn MtLemmonTF_Multimeter
+        meas:hasDimension dim:Voltage
+    ]
+    instance T3_4-MtLemmonTF_Multimeter_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_4-MtLemmonTF_Multimeter_Precision
+        meas:hasUnit units:V
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance MtLemmon_Researcher : agent:Person [
+        foundation:hasID "LegoRoverProject_TestFacilities.MtLemmon_Researcher"
+        foundation:hasName "MtLemmon_Researcher"
+    ]
+    instance T3_3-Battery_Voltage_Start : meas:Quantity [
+        foundation:hasID "T3_3-Battery_Voltage_Start"
+        foundation:hasName "T3_3-Battery_Voltage_Start"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T3_3-Battery_Voltage_Start_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_3-Battery_Voltage_Start
+        meas:hasUnit units:V
+        meas:hasValue "4.68"^^rdfs:Literal
+    ]
+    instance T3_1-YumaTF_Thermometer_Precision : meas:Quantity [
+        foundation:hasID "T3_1-YumaTF_Thermometer_Precision"
+        foundation:hasName "T3_1-YumaTF_Thermometer_Precision"
+        foundation:specificallyDependentOn YumaTF_Thermometer
+        meas:hasDimension dim:Temperature
+    ]
+    instance T3_1-YumaTF_Thermometer_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_1-YumaTF_Thermometer_Precision
+        meas:hasUnit units:degF
+        meas:hasValue "0.1"^^rdfs:Literal
+    ]
+    instance t3_3 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t3.t3_3"
+        foundation:hasName "Rover_TestStrategy.t3.t3_3"
+        agent:hasOutput T3_3-Battery_Life_Measurement
+        agent:hasOutput T3_3-Battery_Voltage_Start_Measurement
+        agent:hasOutput T3_3-MtLemmonTF_Stopwatch_Prescision_Measurement
+        agent:hasOutput T3_3-MtLemmonTF_TestFacility_ActualTemp_Measurement
+        agent:hasOutput T3_3-Battery_Voltage_End_Measurement
+        agent:hasOutput T3_3-MtLemmonTF_Thermometer_Precision_Measurement
+        agent:hasOutput T3_3-MtLemmonTF_Multimeter_Precision_Measurement
+        agent:hasOutput T3_3-wheels_RotationalSpeed_Measurement
+        req:verifies GID-63851
+        req:verifies GID-63854
+        event:hasParticipant MtLemmonTF_Stopwatch
+        event:hasParticipant MtLemmon_Researcher
+        event:hasParticipant MtLemmonTF_BatteryCharger
+        event:hasParticipant MtLemmonTF_Multimeter
+        event:hasParticipant MtLemmonTF_Treadmill
+        event:hasParticipant MtLemmonTF_MemoryStick
+        event:hasParticipant MtLemmonTF_Fridge
+        event:hasParticipant MtLemmonTF_Thermometer
+        event:occursAt MtLemmon_TestFacility
+        test:hasTestSubject lego_Rover
+    ]
+    instance t3_3_TemporalRegion : foundation:TemporalRegion [
+        event:isTemporalRegionOf t3_3
+        event:occursBefore t3_4_TemporalRegion
+    ]
+    instance t3_4_TemporalRegion : foundation:TemporalRegion [
+        event:isTemporalRegionOf t3_4
+    ]
+    instance t3_3_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t3_3_Duration : meas:Quantity [
+        meas:hasDimension dim:Time
+        foundation:specificallyDependentOn t3_3
+    ]
+    instance t3_3_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t3_3_Duration_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf t3_3_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t3_3_Duration
+        meas:hasUnit units:day
+        meas:hasValue "7.5"^^rdfs:Literal
+    ]
+    instance T1_4-wheels_RotationalSpeed : meas:Quantity [
+        foundation:hasID "T1_4-wheels_RotationalSpeed"
+        foundation:hasName "T1_4-wheels_RotationalSpeed"
+        foundation:specificallyDependentOn wheels
+        meas:hasDimension dim:AngularSpeed
+    ]
+    instance T1_4-wheels_RotationalSpeed_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_4-wheels_RotationalSpeed
+        meas:hasUnit units:rpm
+        meas:hasValue "157"^^rdfs:Literal
+    ]
+    instance T2_1-Battery_Voltage_Start : meas:Quantity [
+        foundation:hasID "T2_1-Battery_Voltage_Start"
+        foundation:hasName "T2_1-Battery_Voltage_Start"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T2_1-Battery_Voltage_Start_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_1-Battery_Voltage_Start
+        meas:hasUnit units:V
+        meas:hasValue "4.83"^^rdfs:Literal
+    ]
+    instance T1_3-MtLemmonTF_Thermometer_Precision : meas:Quantity [
+        foundation:hasID "T1_3-MtLemmonTF_Thermometer_Precision"
+        foundation:hasName "T1_3-MtLemmonTF_Thermometer_Precision"
+        foundation:specificallyDependentOn MtLemmonTF_Thermometer
+        meas:hasDimension dim:Temperature
+    ]
+    instance T1_3-MtLemmonTF_Thermometer_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_3-MtLemmonTF_Thermometer_Precision
+        meas:hasUnit units:degF
+        meas:hasValue "0.1"^^rdfs:Literal
+    ]
+    instance T2_2-Battery_Voltage_End : meas:Quantity [
+        foundation:hasID "T2_2-Battery_Voltage_End"
+        foundation:hasName "T2_2-Battery_Voltage_End"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T2_2-Battery_Voltage_End_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_2-Battery_Voltage_End
+        meas:hasUnit units:V
+        meas:hasValue "0"^^rdfs:Literal
+    ]
+    instance YumaTF_Stopwatch : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.YumaTF_Stopwatch"
+        foundation:hasName "YumaTF_Stopwatch"
+        loc:locatedAt Yuma_TestFacility
+    ]
+    instance T3_3-Battery_Life : meas:Quantity [
+        foundation:hasID "T3_3-Battery_Life"
+        foundation:hasName "T3_3-Battery_Life"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Time
+    ]
+    instance T3_3-Battery_Life_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_3-Battery_Life
+        meas:hasUnit units:minute
+        meas:hasValue "111"^^rdfs:Literal
+    ]
+    instance lr_Comms : sa:System [
+        foundation:hasID "LegoRoverProject_Architecture.lego_Rover.lr_Comms"
+        foundation:hasName "lego_Rover.lr_Comms"
+    ]
+    instance T2_3-MtLemmonTF_Stopwatch_Prescision : meas:Quantity [
+        foundation:hasID "T2_3-MtLemmonTF_Stopwatch_Prescision"
+        foundation:hasName "T2_3-MtLemmonTF_Stopwatch_Prescision"
+        foundation:specificallyDependentOn MtLemmonTF_Stopwatch
+        meas:hasDimension dim:Time
+    ]
+    instance T2_3-MtLemmonTF_Stopwatch_Prescision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_3-MtLemmonTF_Stopwatch_Prescision
+        meas:hasUnit units:second
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance T2_1-YumaTF_Thermometer_Precision : meas:Quantity [
+        foundation:hasID "T2_1-YumaTF_Thermometer_Precision"
+        foundation:hasName "T2_1-YumaTF_Thermometer_Precision"
+        foundation:specificallyDependentOn YumaTF_Thermometer
+        meas:hasDimension dim:Temperature
+    ]
+    instance T2_1-YumaTF_Thermometer_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_1-YumaTF_Thermometer_Precision
+        meas:hasUnit units:degF
+        meas:hasValue "0.1"^^rdfs:Literal
+    ]
+    instance MtLemmonTF_Stopwatch : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.MtLemmonTF_Stopwatch"
+        foundation:hasName "MtLemmonTF_Stopwatch"
+        loc:locatedAt MtLemmon_TestFacility
+    ]
+    instance T2_2-YumaTF_Stopwatch_Prescision : meas:Quantity [
+        foundation:hasID "T2_2-YumaTF_Stopwatch_Prescision"
+        foundation:hasName "T2_2-YumaTF_Stopwatch_Prescision"
+        foundation:specificallyDependentOn YumaTF_Stopwatch
+        meas:hasDimension dim:Time
+    ]
+    instance T2_2-YumaTF_Stopwatch_Prescision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_2-YumaTF_Stopwatch_Prescision
+        meas:hasUnit units:second
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance T1_3-MtLemmonTF_TestFacility_ActualTemp : meas:Quantity [
+        foundation:hasID "T1_3-MtLemmonTF_TestFacility_ActualTemp"
+        foundation:hasName "T1_3-MtLemmonTF_TestFacility_ActualTemp"
+        foundation:specificallyDependentOn MtLemmon_TestFacility
+        meas:hasDimension dim:Temperature
+    ]
+    instance T1_3-MtLemmonTF_TestFacility_ActualTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_3-MtLemmonTF_TestFacility_ActualTemp
+        meas:hasUnit units:degF
+        meas:hasValue "37.4"^^rdfs:Literal
+    ]
+    instance T2_4-Battery_Voltage_Start : meas:Quantity [
+        foundation:hasID "T2_4-Battery_Voltage_Start"
+        foundation:hasName "T2_4-Battery_Voltage_Start"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T2_4-Battery_Voltage_Start_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_4-Battery_Voltage_Start
+        meas:hasUnit units:V
+        meas:hasValue "4.95"^^rdfs:Literal
+    ]
+    instance T1_4-Battery_Life : meas:Quantity [
+        foundation:hasID "T1_4-Battery_Life"
+        foundation:hasName "T1_4-Battery_Life"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Time
+    ]
+    instance T1_4-Battery_Life_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_4-Battery_Life
+        meas:hasUnit units:minute
+        meas:hasValue "121"^^rdfs:Literal
+    ]
+    instance Yuma_Researcher : agent:Person [
+        foundation:hasID "LegoRoverProject_TestFacilities.Yuma_Researcher"
+        foundation:hasName "Yuma_Researcher"
+    ]
+    instance T3_1-wheels_RotationalSpeed : meas:Quantity [
+        foundation:hasID "T3_1-wheels_RotationalSpeed"
+        foundation:hasName "T3_1-wheels_RotationalSpeed"
+        foundation:specificallyDependentOn wheels
+        meas:hasDimension dim:AngularSpeed
+    ]
+    instance T3_1-wheels_RotationalSpeed_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_1-wheels_RotationalSpeed
+        meas:hasUnit units:rpm
+        meas:hasValue "77"^^rdfs:Literal
+    ]
+    instance T3_2-YumaTF_Stopwatch_Prescision : meas:Quantity [
+        foundation:hasID "T3_2-YumaTF_Stopwatch_Prescision"
+        foundation:hasName "T3_2-YumaTF_Stopwatch_Prescision"
+        foundation:specificallyDependentOn YumaTF_Stopwatch
+        meas:hasDimension dim:Time
+    ]
+    instance T3_2-YumaTF_Stopwatch_Prescision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_2-YumaTF_Stopwatch_Prescision
+        meas:hasUnit units:second
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance T1_4-Battery_Voltage_Start : meas:Quantity [
+        foundation:hasID "T1_4-Battery_Voltage_Start"
+        foundation:hasName "T1_4-Battery_Voltage_Start"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T1_4-Battery_Voltage_Start_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_4-Battery_Voltage_Start
+        meas:hasUnit units:V
+        meas:hasValue "4.91"^^rdfs:Literal
+    ]
+    instance T2_4-MtLemmonTF_Thermometer_Precision : meas:Quantity [
+        foundation:hasID "T2_4-MtLemmonTF_Thermometer_Precision"
+        foundation:hasName "T2_4-MtLemmonTF_Thermometer_Precision"
+        foundation:specificallyDependentOn MtLemmonTF_Thermometer
+        meas:hasDimension dim:Temperature
+    ]
+    instance T2_4-MtLemmonTF_Thermometer_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_4-MtLemmonTF_Thermometer_Precision
+        meas:hasUnit units:degF
+        meas:hasValue "0.1"^^rdfs:Literal
+    ]
+    instance T1_1-Battery_Voltage_Start : meas:Quantity [
+        foundation:hasID "T1_1-Battery_Voltage_Start"
+        foundation:hasName "T1_1-Battery_Voltage_Start"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T1_1-Battery_Voltage_Start_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_1-Battery_Voltage_Start
+        meas:hasUnit units:V
+        meas:hasValue "4.81"^^rdfs:Literal
+    ]
+    instance TP6 : test:TestProcedure [
+        foundation:hasID "LegoRoverProject_TestStrategy.TP6"
+        foundation:hasName "TP6"
+        info:prescribes t3_2
+        info:prescribes t3_4
+    ]
+    instance Rover_TestStrategy : test:TestStrategy [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy"
+        foundation:hasName "Rover_TestStrategy"
+        foundation:contains t1
+        foundation:contains t3
+        foundation:contains t2
+        req:satisfies GID-63852
+    ]
+    instance T1_1-YumaTF_Multimeter_Precision : meas:Quantity [
+        foundation:hasID "T1_1-YumaTF_Multimeter_Precision"
+        foundation:hasName "T1_1-YumaTF_Multimeter_Precision"
+        foundation:specificallyDependentOn YumaTF_Multimeter
+        meas:hasDimension dim:Voltage
+    ]
+    instance T1_1-YumaTF_Multimeter_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_1-YumaTF_Multimeter_Precision
+        meas:hasUnit units:V
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance MtLemmonTF_Multimeter : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.MtLemmonTF_Multimeter"
+        foundation:hasName "MtLemmonTF_Multimeter"
+        loc:locatedAt MtLemmon_TestFacility
+    ]
+    instance YumaTF_Treadmill : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.YumaTF_Treadmill"
+        foundation:hasName "YumaTF_Treadmill"
+        loc:locatedAt Yuma_TestFacility
+    ]
+    instance T2_3-wheels_RotationalSpeed : meas:Quantity [
+        foundation:hasID "T2_3-wheels_RotationalSpeed"
+        foundation:hasName "T2_3-wheels_RotationalSpeed"
+        foundation:specificallyDependentOn wheels
+        meas:hasDimension dim:AngularSpeed
+    ]
+    instance T2_3-wheels_RotationalSpeed_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_3-wheels_RotationalSpeed
+        meas:hasUnit units:rpm
+        meas:hasValue "85"^^rdfs:Literal
+    ]
+    instance battery : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_Architecture.lego_Rover.lr_Power.battery"
+        foundation:hasName "lego_Rover.lr_Power.battery"
+    ]
+    instance T3_2-Battery_Voltage_End : meas:Quantity [
+        foundation:hasID "T3_2-Battery_Voltage_End"
+        foundation:hasName "T3_2-Battery_Voltage_End"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T3_2-Battery_Voltage_End_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_2-Battery_Voltage_End
+        meas:hasUnit units:V
+        meas:hasValue "0"^^rdfs:Literal
+    ]
+    instance TestStrategy : foundation:Process [
+        foundation:hasID "LegoRoverProject_TestStrategy.TestStrategy"
+        foundation:hasName "TestStrategy"
+    ]
+    instance T3_1-YumaTF_TestFacility_ActualTemp : meas:Quantity [
+        foundation:hasID "T3_1-YumaTF_TestFacility_ActualTemp"
+        foundation:hasName "T3_1-YumaTF_TestFacility_ActualTemp"
+        foundation:specificallyDependentOn Yuma_TestFacility
+        meas:hasDimension dim:Temperature
+    ]
+    instance T3_1-YumaTF_TestFacility_ActualTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_1-YumaTF_TestFacility_ActualTemp
+        meas:hasUnit units:degF
+        meas:hasValue "74.8"^^rdfs:Literal
+    ]
+    instance T3_4-MtLemmonTF_TestFacility_ActualTemp : meas:Quantity [
+        foundation:hasID "T3_4-MtLemmonTF_TestFacility_ActualTemp"
+        foundation:hasName "T3_4-MtLemmonTF_TestFacility_ActualTemp"
+        foundation:specificallyDependentOn MtLemmon_TestFacility
+        meas:hasDimension dim:Temperature
+    ]
+    instance T3_4-MtLemmonTF_TestFacility_ActualTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_4-MtLemmonTF_TestFacility_ActualTemp
+        meas:hasUnit units:degF
+        meas:hasValue "33.5"^^rdfs:Literal
+    ]
+    instance T1_3-MtLemmonTF_Multimeter_Precision : meas:Quantity [
+        foundation:hasID "T1_3-MtLemmonTF_Multimeter_Precision"
+        foundation:hasName "T1_3-MtLemmonTF_Multimeter_Precision"
+        foundation:specificallyDependentOn MtLemmonTF_Multimeter
+        meas:hasDimension dim:Voltage
+    ]
+    instance T1_3-MtLemmonTF_Multimeter_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_3-MtLemmonTF_Multimeter_Precision
+        meas:hasUnit units:V
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance Yuma_Site : foundation:Site [
+        foundation:hasID "LegoRoverProject_TestFacilities.Yuma_Site"
+        foundation:hasName "Yuma_Site"
+        foundation:contains Yuma_TestFacility
+    ]
+    instance T2_4-MtLemmonTF_Stopwatch_Prescision : meas:Quantity [
+        foundation:hasID "T2_4-MtLemmonTF_Stopwatch_Prescision"
+        foundation:hasName "T2_4-MtLemmonTF_Stopwatch_Prescision"
+        foundation:specificallyDependentOn MtLemmonTF_Stopwatch
+        meas:hasDimension dim:Time
+    ]
+    instance T2_4-MtLemmonTF_Stopwatch_Prescision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_4-MtLemmonTF_Stopwatch_Prescision
+        meas:hasUnit units:second
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance operator : agent:Person [
+        foundation:hasID "LegoRoverProject_Architecture.lego_Rover_Mission.operator"
+        foundation:hasName "lego_Rover_Mission.operator"
+    ]
+    instance T1_2-YumaTF_Thermometer_Precision : meas:Quantity [
+        foundation:hasID "T1_2-YumaTF_Thermometer_Precision"
+        foundation:hasName "T1_2-YumaTF_Thermometer_Precision"
+        foundation:specificallyDependentOn YumaTF_Thermometer
+        meas:hasDimension dim:Temperature
+    ]
+    instance T1_2-YumaTF_Thermometer_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_2-YumaTF_Thermometer_Precision
+        meas:hasUnit units:degF
+        meas:hasValue "0.1"^^rdfs:Literal
+    ]
+    instance T3_4-Battery_Voltage_Start : meas:Quantity [
+        foundation:hasID "T3_4-Battery_Voltage_Start"
+        foundation:hasName "T3_4-Battery_Voltage_Start"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T3_4-Battery_Voltage_Start_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_4-Battery_Voltage_Start
+        meas:hasUnit units:V
+        meas:hasValue "4.55"^^rdfs:Literal
+    ]
+    instance MtLemmonTF_Fridge : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.MtLemmonTF_Fridge"
+        foundation:hasName "MtLemmonTF_Fridge"
+        loc:locatedAt MtLemmon_TestFacility
+    ]
+    instance T2_1-Battery_Voltage_End : meas:Quantity [
+        foundation:hasID "T2_1-Battery_Voltage_End"
+        foundation:hasName "T2_1-Battery_Voltage_End"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T2_1-Battery_Voltage_End_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_1-Battery_Voltage_End
+        meas:hasUnit units:V
+        meas:hasValue "0"^^rdfs:Literal
+    ]
+    instance TP5 : test:TestProcedure [
+        foundation:hasID "LegoRoverProject_TestStrategy.TP5"
+        foundation:hasName "TP5"
+        info:prescribes t3_1
+        info:prescribes t3_3
+    ]
+    instance lr_Mobility : sa:System [
+        foundation:hasID "LegoRoverProject_Architecture.lego_Rover.lr_Mobility"
+        foundation:hasName "lego_Rover.lr_Mobility"
+        foundation:contains wheels
+        req:satisfies GID-63854
+        req:satisfies GID-63853
+        req:satisfies GID-63850
+        req:satisfies GID-63851
+    ]
+    instance T2_3-Battery_Voltage_End : meas:Quantity [
+        foundation:hasID "T2_3-Battery_Voltage_End"
+        foundation:hasName "T2_3-Battery_Voltage_End"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T2_3-Battery_Voltage_End_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_3-Battery_Voltage_End
+        meas:hasUnit units:V
+        meas:hasValue "0"^^rdfs:Literal
+    ]
+    instance T1_1-Battery_Life : meas:Quantity [
+        foundation:hasID "T1_1-Battery_Life"
+        foundation:hasName "T1_1-Battery_Life"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Time
+    ]
+    instance T1_1-Battery_Life_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_1-Battery_Life
+        meas:hasUnit units:minute
+        meas:hasValue "114"^^rdfs:Literal
+    ]
+    instance T3_2-YumaTF_TestFacility_ActualTemp : meas:Quantity [
+        foundation:hasID "T3_2-YumaTF_TestFacility_ActualTemp"
+        foundation:hasName "T3_2-YumaTF_TestFacility_ActualTemp"
+        foundation:specificallyDependentOn Yuma_TestFacility
+        meas:hasDimension dim:Temperature
+    ]
+    instance T3_2-YumaTF_TestFacility_ActualTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_2-YumaTF_TestFacility_ActualTemp
+        meas:hasUnit units:degF
+        meas:hasValue "72.1"^^rdfs:Literal
+    ]
+    instance YumaTF_Multimeter : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.YumaTF_Multimeter"
+        foundation:hasName "YumaTF_Multimeter"
+        loc:locatedAt Yuma_TestFacility
+    ]
+    instance T2_3-MtLemmonTF_Multimeter_Precision : meas:Quantity [
+        foundation:hasID "T2_3-MtLemmonTF_Multimeter_Precision"
+        foundation:hasName "T2_3-MtLemmonTF_Multimeter_Precision"
+        foundation:specificallyDependentOn MtLemmonTF_Multimeter
+        meas:hasDimension dim:Voltage
+    ]
+    instance T2_3-MtLemmonTF_Multimeter_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_3-MtLemmonTF_Multimeter_Precision
+        meas:hasUnit units:V
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance T1_1-wheels_RotationalSpeed : meas:Quantity [
+        foundation:hasID "T1_1-wheels_RotationalSpeed"
+        foundation:hasName "T1_1-wheels_RotationalSpeed"
+        foundation:specificallyDependentOn wheels
+        meas:hasDimension dim:AngularSpeed
+    ]
+    instance T1_1-wheels_RotationalSpeed_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_1-wheels_RotationalSpeed
+        meas:hasUnit units:rpm
+        meas:hasValue "93"^^rdfs:Literal
+    ]
+    instance T2_2-Battery_Life : meas:Quantity [
+        foundation:hasID "T2_2-Battery_Life"
+        foundation:hasName "T2_2-Battery_Life"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Time
+    ]
+    instance T2_2-Battery_Life_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_2-Battery_Life
+        meas:hasUnit units:minute
+        meas:hasValue "86"^^rdfs:Literal
+    ]
+    instance T2_3-MtLemmonTF_TestFacility_ActualTemp : meas:Quantity [
+        foundation:hasID "T2_3-MtLemmonTF_TestFacility_ActualTemp"
+        foundation:hasName "T2_3-MtLemmonTF_TestFacility_ActualTemp"
+        foundation:specificallyDependentOn MtLemmon_TestFacility
+        meas:hasDimension dim:Temperature
+    ]
+    instance T2_3-MtLemmonTF_TestFacility_ActualTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_3-MtLemmonTF_TestFacility_ActualTemp
+        meas:hasUnit units:degF
+        meas:hasValue "36.1"^^rdfs:Literal
+    ]
+    instance T3_3-MtLemmonTF_Thermometer_Precision : meas:Quantity [
+        foundation:hasID "T3_3-MtLemmonTF_Thermometer_Precision"
+        foundation:hasName "T3_3-MtLemmonTF_Thermometer_Precision"
+        foundation:specificallyDependentOn MtLemmonTF_Thermometer
+        meas:hasDimension dim:Temperature
+    ]
+    instance T3_3-MtLemmonTF_Thermometer_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_3-MtLemmonTF_Thermometer_Precision
+        meas:hasUnit units:degF
+        meas:hasValue "0.1"^^rdfs:Literal
+    ]
+    instance t1_2 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t1.t1_2"
+        foundation:hasName "Rover_TestStrategy.t1.t1_2"
+        agent:hasOutput T1_2-YumaTF_Stopwatch_Prescision_Measurement
+        agent:hasOutput T1_2-YumaTF_Multimeter_Precision_Measurement
+        agent:hasOutput T1_2-Battery_Life_Measurement
+        agent:hasOutput T1_2-YumaTF_TestFacility_ActualTemp_Measurement
+        agent:hasOutput T1_2-YumaTF_Thermometer_Precision_Measurement
+        agent:hasOutput T1_2-Battery_Voltage_Start_Measurement
+        agent:hasOutput T1_2-wheels_RotationalSpeed_Measurement
+        agent:hasOutput T1_2-Battery_Voltage_End_Measurement
+        req:verifies GID-63853
+        req:verifies GID-63850
+        event:hasParticipant Yuma_Researcher
+        event:hasParticipant YumaTF_MemoryStick
+        event:hasParticipant YumaTF_BatteryCharger
+        event:hasParticipant YumaTF_Stopwatch
+        event:hasParticipant YumaTF_Thermometer
+        event:hasParticipant YumaTF_Multimeter
+        event:occursAt Yuma_TestFacility
+        test:hasTestSubject lego_Rover
+    ]
+    instance t1_2_TemporalRegion : foundation:TemporalRegion [
+        event:isTemporalRegionOf t1_2
+        event:occursBefore t2_1_TemporalRegion
+    ]
+    instance t2_1_TemporalRegion : foundation:TemporalRegion [
+        event:isTemporalRegionOf t2_1
+        event:occursBefore t2_2_TemporalRegion
+    ]
+    instance t1_2_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_2_Duration : meas:Quantity [
+        meas:hasDimension dim:Time
+        foundation:specificallyDependentOn t1_2
+    ]
+    instance t1_2_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_2_Duration_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf t1_2_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_2_Duration
+        meas:hasUnit units:day
+        meas:hasValue "0.5"^^rdfs:Literal
+    ]
+    instance T3_4-MtLemmonTF_Thermometer_Precision : meas:Quantity [
+        foundation:hasID "T3_4-MtLemmonTF_Thermometer_Precision"
+        foundation:hasName "T3_4-MtLemmonTF_Thermometer_Precision"
+        foundation:specificallyDependentOn MtLemmonTF_Thermometer
+        meas:hasDimension dim:Temperature
+    ]
+    instance T3_4-MtLemmonTF_Thermometer_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_4-MtLemmonTF_Thermometer_Precision
+        meas:hasUnit units:degF
+        meas:hasValue "0.1"^^rdfs:Literal
+    ]
+    instance T2_2-YumaTF_TestFacility_ActualTemp : meas:Quantity [
+        foundation:hasID "T2_2-YumaTF_TestFacility_ActualTemp"
+        foundation:hasName "T2_2-YumaTF_TestFacility_ActualTemp"
+        foundation:specificallyDependentOn Yuma_TestFacility
+        meas:hasDimension dim:Temperature
+    ]
+    instance T2_2-YumaTF_TestFacility_ActualTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_2-YumaTF_TestFacility_ActualTemp
+        meas:hasUnit units:degF
+        meas:hasValue "74.2"^^rdfs:Literal
+    ]
+    instance T3_1-Battery_Voltage_Start : meas:Quantity [
+        foundation:hasID "T3_1-Battery_Voltage_Start"
+        foundation:hasName "T3_1-Battery_Voltage_Start"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T3_1-Battery_Voltage_Start_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_1-Battery_Voltage_Start
+        meas:hasUnit units:V
+        meas:hasValue "4.74"^^rdfs:Literal
+    ]
+    instance T2_3-Battery_Voltage_Start : meas:Quantity [
+        foundation:hasID "T2_3-Battery_Voltage_Start"
+        foundation:hasName "T2_3-Battery_Voltage_Start"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T2_3-Battery_Voltage_Start_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_3-Battery_Voltage_Start
+        meas:hasUnit units:V
+        meas:hasValue "4.75"^^rdfs:Literal
+    ]
+    instance t2_1 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t2.t2_1"
+        foundation:hasName "Rover_TestStrategy.t2.t2_1"
+        agent:hasOutput T2_1-YumaTF_TestFacility_ActualTemp_Measurement
+        agent:hasOutput T2_1-YumaTF_Thermometer_Precision_Measurement
+        agent:hasOutput T2_1-Battery_Life_Measurement
+        agent:hasOutput T2_1-YumaTF_Stopwatch_Prescision_Measurement
+        agent:hasOutput T2_1-YumaTF_Multimeter_Precision_Measurement
+        agent:hasOutput T2_1-wheels_RotationalSpeed_Measurement
+        agent:hasOutput T2_1-Battery_Voltage_End_Measurement
+        agent:hasOutput T2_1-Battery_Voltage_Start_Measurement
+        req:verifies GID-63853
+        req:verifies GID-63851
+        event:hasParticipant YumaTF_MemoryStick
+        event:hasParticipant YumaTF_Multimeter
+        event:hasParticipant YumaTF_Thermometer
+        event:hasParticipant YumaTF_Stopwatch
+        event:hasParticipant Yuma_Researcher
+        event:hasParticipant YumaTF_Treadmill
+        event:hasParticipant YumaTF_BatteryCharger
+        event:occursAt Yuma_TestFacility
+        test:hasTestSubject lego_Rover
+    ]
+    instance t2_2_TemporalRegion : foundation:TemporalRegion [
+        event:isTemporalRegionOf t2_2
+        event:occursBefore t1_3_TemporalRegion
+    ]
+    instance t2_1_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t2_1_Duration : meas:Quantity [
+        meas:hasDimension dim:Time
+        foundation:specificallyDependentOn t2_1
+    ]
+    instance t2_1_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t2_1_Duration_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf t2_1_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t2_1_Duration
+        meas:hasUnit units:day
+        meas:hasValue "0.5"^^rdfs:Literal
+    ]
+    instance T1_1-YumaTF_Thermometer_Precision : meas:Quantity [
+        foundation:hasID "T1_1-YumaTF_Thermometer_Precision"
+        foundation:hasName "T1_1-YumaTF_Thermometer_Precision"
+        foundation:specificallyDependentOn YumaTF_Thermometer
+        meas:hasDimension dim:Temperature
+    ]
+    instance T1_1-YumaTF_Thermometer_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_1-YumaTF_Thermometer_Precision
+        meas:hasUnit units:degF
+        meas:hasValue "0.1"^^rdfs:Literal
+    ]
+    instance T3_1-YumaTF_Multimeter_Precision : meas:Quantity [
+        foundation:hasID "T3_1-YumaTF_Multimeter_Precision"
+        foundation:hasName "T3_1-YumaTF_Multimeter_Precision"
+        foundation:specificallyDependentOn YumaTF_Multimeter
+        meas:hasDimension dim:Voltage
+    ]
+    instance T3_1-YumaTF_Multimeter_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_1-YumaTF_Multimeter_Precision
+        meas:hasUnit units:V
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance t2_2 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t2.t2_2"
+        foundation:hasName "Rover_TestStrategy.t2.t2_2"
+        agent:hasOutput T2_2-YumaTF_Thermometer_Precision_Measurement
+        agent:hasOutput T2_2-wheels_RotationalSpeed_Measurement
+        agent:hasOutput T2_2-YumaTF_TestFacility_ActualTemp_Measurement
+        agent:hasOutput T2_2-YumaTF_Multimeter_Precision_Measurement
+        agent:hasOutput T2_2-Battery_Life_Measurement
+        agent:hasOutput T2_2-Battery_Voltage_End_Measurement
+        agent:hasOutput T2_2-YumaTF_Stopwatch_Prescision_Measurement
+        agent:hasOutput T2_2-Battery_Voltage_Start_Measurement
+        req:verifies GID-63850
+        req:verifies GID-63853
+        event:hasParticipant YumaTF_Stopwatch
+        event:hasParticipant YumaTF_Multimeter
+        event:hasParticipant Yuma_Researcher
+        event:hasParticipant YumaTF_MemoryStick
+        event:hasParticipant YumaTF_BatteryCharger
+        event:hasParticipant YumaTF_Thermometer
+        event:occursAt Yuma_TestFacility
+        test:hasTestSubject lego_Rover
+    ]
+    instance t1_3_TemporalRegion : foundation:TemporalRegion [
+        event:isTemporalRegionOf t1_3
+        event:occursBefore t1_4_TemporalRegion
+    ]
+    instance t2_2_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_2_Duration : meas:Quantity [
+        meas:hasDimension dim:Time
+        foundation:specificallyDependentOn t2_2
+    ]
+    instance t2_2_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_2_Duration_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf t2_2_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_2_Duration
+        meas:hasUnit units:day
+        meas:hasValue "0.5"^^rdfs:Literal
+    ]
+    instance T1_2-Battery_Voltage_End : meas:Quantity [
+        foundation:hasID "T1_2-Battery_Voltage_End"
+        foundation:hasName "T1_2-Battery_Voltage_End"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T1_2-Battery_Voltage_End_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_2-Battery_Voltage_End
+        meas:hasUnit units:V
+        meas:hasValue "0"^^rdfs:Literal
+    ]
+    instance t3 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t3"
+        foundation:hasName "Rover_TestStrategy.t3"
+        foundation:contains t3_4
+        foundation:contains t3_1
+        foundation:contains t3_2
+        foundation:contains t3_3
+        test:hasTestSubject lego_Rover
+    ]
+    instance t1_1 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t1.t1_1"
+        foundation:hasName "Rover_TestStrategy.t1.t1_1"
+        agent:hasOutput T1_1-YumaTF_Multimeter_Precision_Measurement
+        agent:hasOutput T1_1-Battery_Voltage_End_Measurement
+        agent:hasOutput T1_1-Battery_Life_Measurement
+        agent:hasOutput T1_1-YumaTF_Stopwatch_Prescision_Measurement
+        agent:hasOutput T1_1-wheels_RotationalSpeed_Measurement
+        agent:hasOutput T1_1-YumaTF_TestFacility_ActualTemp_Measurement
+        agent:hasOutput T1_1-Battery_Voltage_Start_Measurement
+        agent:hasOutput T1_1-YumaTF_Thermometer_Precision_Measurement
+        req:verifies GID-63851
+        req:verifies GID-63853
+        event:hasParticipant YumaTF_MemoryStick
+        event:hasParticipant YumaTF_Thermometer
+        event:hasParticipant Yuma_Researcher
+        event:hasParticipant YumaTF_Treadmill
+        event:hasParticipant YumaTF_Multimeter
+        event:hasParticipant YumaTF_BatteryCharger
+        event:hasParticipant YumaTF_Stopwatch
+        event:occursAt Yuma_TestFacility
+        test:hasTestSubject lego_Rover
+    ]
+    instance t1_1_TemporalRegion : foundation:TemporalRegion [
+        event:isTemporalRegionOf t1_1
+        event:occursBefore t1_2_TemporalRegion
+    ]
+    instance t1_1_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_1_Duration : meas:Quantity [
+        meas:hasDimension dim:Time
+        foundation:specificallyDependentOn t1_1
+    ]
+    instance t1_1_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_1_Duration_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf t1_1_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_1_Duration
+        meas:hasUnit units:day
+        meas:hasValue "0.5"^^rdfs:Literal
+    ]
+    instance T2_3-MtLemmonTF_Thermometer_Precision : meas:Quantity [
+        foundation:hasID "T2_3-MtLemmonTF_Thermometer_Precision"
+        foundation:hasName "T2_3-MtLemmonTF_Thermometer_Precision"
+        foundation:specificallyDependentOn MtLemmonTF_Thermometer
+        meas:hasDimension dim:Temperature
+    ]
+    instance T2_3-MtLemmonTF_Thermometer_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_3-MtLemmonTF_Thermometer_Precision
+        meas:hasUnit units:degF
+        meas:hasValue "0.1"^^rdfs:Literal
+    ]
+    instance T1_3-wheels_RotationalSpeed : meas:Quantity [
+        foundation:hasID "T1_3-wheels_RotationalSpeed"
+        foundation:hasName "T1_3-wheels_RotationalSpeed"
+        foundation:specificallyDependentOn wheels
+        meas:hasDimension dim:AngularSpeed
+    ]
+    instance T1_3-wheels_RotationalSpeed_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_3-wheels_RotationalSpeed
+        meas:hasUnit units:rpm
+        meas:hasValue "91"^^rdfs:Literal
+    ]
+    instance T2_4-MtLemmonTF_TestFacility_ActualTemp : meas:Quantity [
+        foundation:hasID "T2_4-MtLemmonTF_TestFacility_ActualTemp"
+        foundation:hasName "T2_4-MtLemmonTF_TestFacility_ActualTemp"
+        foundation:specificallyDependentOn MtLemmon_TestFacility
+        meas:hasDimension dim:Temperature
+    ]
+    instance T2_4-MtLemmonTF_TestFacility_ActualTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_4-MtLemmonTF_TestFacility_ActualTemp
+        meas:hasUnit units:degF
+        meas:hasValue "38.8"^^rdfs:Literal
+    ]
+    instance t3_1 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t3.t3_1"
+        foundation:hasName "Rover_TestStrategy.t3.t3_1"
+        agent:hasOutput T3_1-Battery_Voltage_Start_Measurement
+        agent:hasOutput T3_1-YumaTF_Multimeter_Precision_Measurement
+        agent:hasOutput T3_1-Battery_Voltage_End_Measurement
+        agent:hasOutput T3_1-YumaTF_Stopwatch_Prescision_Measurement
+        agent:hasOutput T3_1-YumaTF_TestFacility_ActualTemp_Measurement
+        agent:hasOutput T3_1-wheels_RotationalSpeed_Measurement
+        agent:hasOutput T3_1-YumaTF_Thermometer_Precision_Measurement
+        agent:hasOutput T3_1-Battery_Life_Measurement
+        req:verifies GID-63851
+        req:verifies GID-63853
+        event:hasParticipant YumaTF_Stopwatch
+        event:hasParticipant YumaTF_Thermometer
+        event:hasParticipant YumaTF_Treadmill
+        event:hasParticipant YumaTF_MemoryStick
+        event:hasParticipant YumaTF_BatteryCharger
+        event:hasParticipant YumaTF_Fridge
+        event:hasParticipant Yuma_Researcher
+        event:hasParticipant YumaTF_Multimeter
+        event:occursAt Yuma_TestFacility
+        test:hasTestSubject lego_Rover
+    ]
+    instance t3_1_TemporalRegion : foundation:TemporalRegion [
+        event:isTemporalRegionOf t3_1
+        event:occursBefore t3_2_TemporalRegion
+    ]
+    instance t3_2_TemporalRegion : foundation:TemporalRegion [
+        event:isTemporalRegionOf t3_2
+        event:occursBefore t3_3_TemporalRegion
+    ]
+    instance t3_1_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t3_1_Duration : meas:Quantity [
+        meas:hasDimension dim:Time
+        foundation:specificallyDependentOn t3_1
+    ]
+    instance t3_1_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t3_1_Duration_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf t3_1_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t3_1_Duration
+        meas:hasUnit units:day
+        meas:hasValue "7.5"^^rdfs:Literal
+    ]
+    instance TP1 : test:TestProcedure [
+        foundation:hasID "LegoRoverProject_TestStrategy.TP1"
+        foundation:hasName "TP1"
+        info:prescribes t1_1
+        info:prescribes t1_3
+    ]
+    instance T1_2-YumaTF_TestFacility_ActualTemp : meas:Quantity [
+        foundation:hasID "T1_2-YumaTF_TestFacility_ActualTemp"
+        foundation:hasName "T1_2-YumaTF_TestFacility_ActualTemp"
+        foundation:specificallyDependentOn Yuma_TestFacility
+        meas:hasDimension dim:Temperature
+    ]
+    instance T1_2-YumaTF_TestFacility_ActualTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_2-YumaTF_TestFacility_ActualTemp
+        meas:hasUnit units:degF
+        meas:hasValue "72.3"^^rdfs:Literal
+    ]
+    instance T3_4-wheels_RotationalSpeed : meas:Quantity [
+        foundation:hasID "T3_4-wheels_RotationalSpeed"
+        foundation:hasName "T3_4-wheels_RotationalSpeed"
+        foundation:specificallyDependentOn wheels
+        meas:hasDimension dim:AngularSpeed
+    ]
+    instance T3_4-wheels_RotationalSpeed_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_4-wheels_RotationalSpeed
+        meas:hasUnit units:rpm
+        meas:hasValue "115"^^rdfs:Literal
+    ]
+    instance T2_4-wheels_RotationalSpeed : meas:Quantity [
+        foundation:hasID "T2_4-wheels_RotationalSpeed"
+        foundation:hasName "T2_4-wheels_RotationalSpeed"
+        foundation:specificallyDependentOn wheels
+        meas:hasDimension dim:AngularSpeed
+    ]
+    instance T2_4-wheels_RotationalSpeed_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_4-wheels_RotationalSpeed
+        meas:hasUnit units:rpm
+        meas:hasValue "144"^^rdfs:Literal
+    ]
+    instance T1_4-MtLemmonTF_Stopwatch_Prescision : meas:Quantity [
+        foundation:hasID "T1_4-MtLemmonTF_Stopwatch_Prescision"
+        foundation:hasName "T1_4-MtLemmonTF_Stopwatch_Prescision"
+        foundation:specificallyDependentOn MtLemmonTF_Stopwatch
+        meas:hasDimension dim:Time
+    ]
+    instance T1_4-MtLemmonTF_Stopwatch_Prescision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_4-MtLemmonTF_Stopwatch_Prescision
+        meas:hasUnit units:second
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance MtLemmonTF_Thermometer : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.MtLemmonTF_Thermometer"
+        foundation:hasName "MtLemmonTF_Thermometer"
+        loc:locatedAt MtLemmon_TestFacility
+    ]
+    instance lego_Rover_Mission_Environment : mis:Environment [
+        foundation:hasID "LegoRoverProject_Architecture.lego_Rover_Mission.lego_Rover_Mission_Environment"
+        foundation:hasName "lego_Rover_Mission.lego_Rover_Mission_Environment"
+        foundation:contains lego_Rover
+    ]
+    instance GID-63853 : req:Requirement [
+        foundation:hasID "19546"
+        foundation:hasName "Temperature A"
+        foundation:hasNaturalLanguageDescription "The system shall operate in a high-temp (at least 70degF) environment for at least 100 minutes "
+        info:prescribes lego_Rover
+    ]
+    instance T1_1-YumaTF_TestFacility_ActualTemp : meas:Quantity [
+        foundation:hasID "T1_1-YumaTF_TestFacility_ActualTemp"
+        foundation:hasName "T1_1-YumaTF_TestFacility_ActualTemp"
+        foundation:specificallyDependentOn Yuma_TestFacility
+        meas:hasDimension dim:Temperature
+    ]
+    instance T1_1-YumaTF_TestFacility_ActualTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_1-YumaTF_TestFacility_ActualTemp
+        meas:hasUnit units:degF
+        meas:hasValue "71.4"^^rdfs:Literal
+    ]
+    instance T3_3-MtLemmonTF_Stopwatch_Prescision : meas:Quantity [
+        foundation:hasID "T3_3-MtLemmonTF_Stopwatch_Prescision"
+        foundation:hasName "T3_3-MtLemmonTF_Stopwatch_Prescision"
+        foundation:specificallyDependentOn MtLemmonTF_Stopwatch
+        meas:hasDimension dim:Time
+    ]
+    instance T3_3-MtLemmonTF_Stopwatch_Prescision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_3-MtLemmonTF_Stopwatch_Prescision
+        meas:hasUnit units:second
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance YumaTF_BatteryCharger : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.YumaTF_BatteryCharger"
+        foundation:hasName "YumaTF_BatteryCharger"
+        loc:locatedAt Yuma_TestFacility
+    ]
+    instance T3_3-MtLemmonTF_Multimeter_Precision : meas:Quantity [
+        foundation:hasID "T3_3-MtLemmonTF_Multimeter_Precision"
+        foundation:hasName "T3_3-MtLemmonTF_Multimeter_Precision"
+        foundation:specificallyDependentOn MtLemmonTF_Multimeter
+        meas:hasDimension dim:Voltage
+    ]
+    instance T3_3-MtLemmonTF_Multimeter_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_3-MtLemmonTF_Multimeter_Precision
+        meas:hasUnit units:V
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance t1_3 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t1.t1_3"
+        foundation:hasName "Rover_TestStrategy.t1.t1_3"
+        agent:hasOutput T1_3-MtLemmonTF_TestFacility_ActualTemp_Measurement
+        agent:hasOutput T1_3-wheels_RotationalSpeed_Measurement
+        agent:hasOutput T1_3-MtLemmonTF_Thermometer_Precision_Measurement
+        agent:hasOutput T1_3-MtLemmonTF_Multimeter_Precision_Measurement
+        agent:hasOutput T1_3-MtLemmonTF_Stopwatch_Prescision_Measurement
+        agent:hasOutput T1_3-Battery_Voltage_End_Measurement
+        agent:hasOutput T1_3-Battery_Voltage_Start_Measurement
+        agent:hasOutput T1_3-Battery_Life_Measurement
+        req:verifies GID-63854
+        req:verifies GID-63851
+        event:hasParticipant MtLemmonTF_Treadmill
+        event:hasParticipant MtLemmonTF_Thermometer
+        event:hasParticipant MtLemmon_Researcher
+        event:hasParticipant MtLemmonTF_MemoryStick
+        event:hasParticipant MtLemmonTF_BatteryCharger
+        event:hasParticipant MtLemmonTF_Multimeter
+        event:hasParticipant MtLemmonTF_Stopwatch
+        event:occursAt MtLemmon_TestFacility
+        test:hasTestSubject lego_Rover
+    ]
+    instance t1_4_TemporalRegion : foundation:TemporalRegion [
+        event:isTemporalRegionOf t1_4
+        event:occursBefore t2_3_TemporalRegion
+    ]
+    instance t1_3_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_3_Duration : meas:Quantity [
+        meas:hasDimension dim:Time
+        foundation:specificallyDependentOn t1_3
+    ]
+    instance t1_3_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_3_Duration_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf t1_3_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_3_Duration
+        meas:hasUnit units:day
+        meas:hasValue "0.5"^^rdfs:Literal
+    ]
+    instance T3_3-Battery_Voltage_End : meas:Quantity [
+        foundation:hasID "T3_3-Battery_Voltage_End"
+        foundation:hasName "T3_3-Battery_Voltage_End"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T3_3-Battery_Voltage_End_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_3-Battery_Voltage_End
+        meas:hasUnit units:V
+        meas:hasValue "0"^^rdfs:Literal
+    ]
+    instance MtLemmonTF_BatteryCharger : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.MtLemmonTF_BatteryCharger"
+        foundation:hasName "MtLemmonTF_BatteryCharger"
+        loc:locatedAt MtLemmon_TestFacility
+    ]
+    instance TP4 : test:TestProcedure [
+        foundation:hasID "LegoRoverProject_TestStrategy.TP4"
+        foundation:hasName "TP4"
+        info:prescribes t2_2
+        info:prescribes t2_4
+    ]
+    instance T2_1-Battery_Life : meas:Quantity [
+        foundation:hasID "T2_1-Battery_Life"
+        foundation:hasName "T2_1-Battery_Life"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Time
+    ]
+    instance T2_1-Battery_Life_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_1-Battery_Life
+        meas:hasUnit units:minute
+        meas:hasValue "121"^^rdfs:Literal
+    ]
+    instance T3_3-wheels_RotationalSpeed : meas:Quantity [
+        foundation:hasID "T3_3-wheels_RotationalSpeed"
+        foundation:hasName "T3_3-wheels_RotationalSpeed"
+        foundation:specificallyDependentOn wheels
+        meas:hasDimension dim:AngularSpeed
+    ]
+    instance T3_3-wheels_RotationalSpeed_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_3-wheels_RotationalSpeed
+        meas:hasUnit units:rpm
+        meas:hasValue "78"^^rdfs:Literal
+    ]
+    instance T3_3-MtLemmonTF_TestFacility_ActualTemp : meas:Quantity [
+        foundation:hasID "T3_3-MtLemmonTF_TestFacility_ActualTemp"
+        foundation:hasName "T3_3-MtLemmonTF_TestFacility_ActualTemp"
+        foundation:specificallyDependentOn MtLemmon_TestFacility
+        meas:hasDimension dim:Temperature
+    ]
+    instance T3_3-MtLemmonTF_TestFacility_ActualTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_3-MtLemmonTF_TestFacility_ActualTemp
+        meas:hasUnit units:degF
+        meas:hasValue "38.1"^^rdfs:Literal
+    ]
+    instance T1_4-MtLemmonTF_Thermometer_Precision : meas:Quantity [
+        foundation:hasID "T1_4-MtLemmonTF_Thermometer_Precision"
+        foundation:hasName "T1_4-MtLemmonTF_Thermometer_Precision"
+        foundation:specificallyDependentOn MtLemmonTF_Thermometer
+        meas:hasDimension dim:Temperature
+    ]
+    instance T1_4-MtLemmonTF_Thermometer_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_4-MtLemmonTF_Thermometer_Precision
+        meas:hasUnit units:degF
+        meas:hasValue "0.1"^^rdfs:Literal
+    ]
+    instance T2_4-Battery_Life : meas:Quantity [
+        foundation:hasID "T2_4-Battery_Life"
+        foundation:hasName "T2_4-Battery_Life"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Time
+    ]
+    instance T2_4-Battery_Life_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_4-Battery_Life
+        meas:hasUnit units:minute
+        meas:hasValue "119"^^rdfs:Literal
+    ]
+    instance T3_1-YumaTF_Stopwatch_Prescision : meas:Quantity [
+        foundation:hasID "T3_1-YumaTF_Stopwatch_Prescision"
+        foundation:hasName "T3_1-YumaTF_Stopwatch_Prescision"
+        foundation:specificallyDependentOn YumaTF_Stopwatch
+        meas:hasDimension dim:Time
+    ]
+    instance T3_1-YumaTF_Stopwatch_Prescision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_1-YumaTF_Stopwatch_Prescision
+        meas:hasUnit units:second
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance T2_2-YumaTF_Thermometer_Precision : meas:Quantity [
+        foundation:hasID "T2_2-YumaTF_Thermometer_Precision"
+        foundation:hasName "T2_2-YumaTF_Thermometer_Precision"
+        foundation:specificallyDependentOn YumaTF_Thermometer
+        meas:hasDimension dim:Temperature
+    ]
+    instance T2_2-YumaTF_Thermometer_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_2-YumaTF_Thermometer_Precision
+        meas:hasUnit units:degF
+        meas:hasValue "0.1"^^rdfs:Literal
+    ]
+    instance T3_2-Battery_Life : meas:Quantity [
+        foundation:hasID "T3_2-Battery_Life"
+        foundation:hasName "T3_2-Battery_Life"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Time
+    ]
+    instance T3_2-Battery_Life_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_2-Battery_Life
+        meas:hasUnit units:minute
+        meas:hasValue "121"^^rdfs:Literal
+    ]
+    instance t1 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t1"
+        foundation:hasName "Rover_TestStrategy.t1"
+        foundation:contains t1_1
+        foundation:contains t1_4
+        foundation:contains t1_3
+        foundation:contains t1_2
+        test:hasTestSubject lego_Rover
+    ]
+    instance T1_3-MtLemmonTF_Stopwatch_Prescision : meas:Quantity [
+        foundation:hasID "T1_3-MtLemmonTF_Stopwatch_Prescision"
+        foundation:hasName "T1_3-MtLemmonTF_Stopwatch_Prescision"
+        foundation:specificallyDependentOn MtLemmonTF_Stopwatch
+        meas:hasDimension dim:Time
+    ]
+    instance T1_3-MtLemmonTF_Stopwatch_Prescision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_3-MtLemmonTF_Stopwatch_Prescision
+        meas:hasUnit units:second
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance T3_2-Battery_Voltage_Start : meas:Quantity [
+        foundation:hasID "T3_2-Battery_Voltage_Start"
+        foundation:hasName "T3_2-Battery_Voltage_Start"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T3_2-Battery_Voltage_Start_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_2-Battery_Voltage_Start
+        meas:hasUnit units:V
+        meas:hasValue "4.71"^^rdfs:Literal
+    ]
+    instance T1_4-MtLemmonTF_TestFacility_ActualTemp : meas:Quantity [
+        foundation:hasID "T1_4-MtLemmonTF_TestFacility_ActualTemp"
+        foundation:hasName "T1_4-MtLemmonTF_TestFacility_ActualTemp"
+        foundation:specificallyDependentOn MtLemmon_TestFacility
+        meas:hasDimension dim:Temperature
+    ]
+    instance T1_4-MtLemmonTF_TestFacility_ActualTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_4-MtLemmonTF_TestFacility_ActualTemp
+        meas:hasUnit units:degF
+        meas:hasValue "39.1"^^rdfs:Literal
+    ]
+    instance t1_4 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t1.t1_4"
+        foundation:hasName "Rover_TestStrategy.t1.t1_4"
+        agent:hasOutput T1_4-MtLemmonTF_Stopwatch_Prescision_Measurement
+        agent:hasOutput T1_4-Battery_Voltage_End_Measurement
+        agent:hasOutput T1_4-MtLemmonTF_TestFacility_ActualTemp_Measurement
+        agent:hasOutput T1_4-MtLemmonTF_Thermometer_Precision_Measurement
+        agent:hasOutput T1_4-Battery_Life_Measurement
+        agent:hasOutput T1_4-wheels_RotationalSpeed_Measurement
+        agent:hasOutput T1_4-MtLemmonTF_Multimeter_Precision_Measurement
+        agent:hasOutput T1_4-Battery_Voltage_Start_Measurement
+        req:verifies GID-63854
+        req:verifies GID-63850
+        event:hasParticipant MtLemmonTF_MemoryStick
+        event:hasParticipant MtLemmonTF_BatteryCharger
+        event:hasParticipant MtLemmon_Researcher
+        event:hasParticipant MtLemmonTF_Multimeter
+        event:hasParticipant MtLemmonTF_Thermometer
+        event:hasParticipant MtLemmonTF_Stopwatch
+        event:occursAt MtLemmon_TestFacility
+        test:hasTestSubject lego_Rover
+    ]
+    instance t2_3_TemporalRegion : foundation:TemporalRegion [
+        event:isTemporalRegionOf t2_3
+        event:occursBefore t2_4_TemporalRegion
+    ]
+    instance t1_4_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_4_Duration : meas:Quantity [
+        meas:hasDimension dim:Time
+        foundation:specificallyDependentOn t1_4
+    ]
+    instance t1_4_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_4_Duration_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf t1_4_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t1_4_Duration
+        meas:hasUnit units:day
+        meas:hasValue "0.5"^^rdfs:Literal
+    ]
+    instance lr_Power : sa:System [
+        foundation:hasID "LegoRoverProject_Architecture.lego_Rover.lr_Power"
+        foundation:hasName "lego_Rover.lr_Power"
+        foundation:contains battery
+    ]
+    instance T1_2-Battery_Life : meas:Quantity [
+        foundation:hasID "T1_2-Battery_Life"
+        foundation:hasName "T1_2-Battery_Life"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Time
+    ]
+    instance T1_2-Battery_Life_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_2-Battery_Life
+        meas:hasUnit units:minute
+        meas:hasValue "111"^^rdfs:Literal
+    ]
+    instance YumaTF_Fridge : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.YumaTF_Fridge"
+        foundation:hasName "YumaTF_Fridge"
+        loc:locatedAt Yuma_TestFacility
+    ]
+    instance T2_2-YumaTF_Multimeter_Precision : meas:Quantity [
+        foundation:hasID "T2_2-YumaTF_Multimeter_Precision"
+        foundation:hasName "T2_2-YumaTF_Multimeter_Precision"
+        foundation:specificallyDependentOn YumaTF_Multimeter
+        meas:hasDimension dim:Voltage
+    ]
+    instance T2_2-YumaTF_Multimeter_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_2-YumaTF_Multimeter_Precision
+        meas:hasUnit units:V
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance t2_3 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t2.t2_3"
+        foundation:hasName "Rover_TestStrategy.t2.t2_3"
+        agent:hasOutput T2_3-MtLemmonTF_Stopwatch_Prescision_Measurement
+        agent:hasOutput T2_3-MtLemmonTF_Multimeter_Precision_Measurement
+        agent:hasOutput T2_3-wheels_RotationalSpeed_Measurement
+        agent:hasOutput T2_3-MtLemmonTF_TestFacility_ActualTemp_Measurement
+        agent:hasOutput T2_3-MtLemmonTF_Thermometer_Precision_Measurement
+        agent:hasOutput T2_3-Battery_Voltage_End_Measurement
+        agent:hasOutput T2_3-Battery_Life_Measurement
+        agent:hasOutput T2_3-Battery_Voltage_Start_Measurement
+        req:verifies GID-63854
+        req:verifies GID-63851
+        event:hasParticipant MtLemmonTF_BatteryCharger
+        event:hasParticipant MtLemmonTF_Multimeter
+        event:hasParticipant MtLemmon_Researcher
+        event:hasParticipant MtLemmonTF_Thermometer
+        event:hasParticipant MtLemmonTF_Stopwatch
+        event:hasParticipant MtLemmonTF_Treadmill
+        event:hasParticipant MtLemmonTF_MemoryStick
+        event:occursAt MtLemmon_TestFacility
+        test:hasTestSubject lego_Rover
+    ]
+    instance t2_4_TemporalRegion : foundation:TemporalRegion [
+        event:isTemporalRegionOf t2_4
+        event:occursBefore t3_1_TemporalRegion
+    ]
+    instance t2_3_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t2_3_Duration : meas:Quantity [
+        meas:hasDimension dim:Time
+        foundation:specificallyDependentOn t2_3
+    ]
+    instance t2_3_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t2_3_Duration_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf t2_3_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t2_3_Duration
+        meas:hasUnit units:day
+        meas:hasValue "0.5"^^rdfs:Literal
+    ]
+    instance MtLemmon_TestFacility : test:TestSite [
+        foundation:hasID "LegoRoverProject_TestFacilities.MtLemmon_Site.MtLemmon_TestFacility"
+        foundation:hasName "MtLemmon_Site.MtLemmon_TestFacility"
+    ]
+    instance MtLemmon_TestFacility_SysML_v2-Part-2a5de174-4dcb-4a45-a715-1d3786422036.MtLemmon_TestFacility_MinTemp : meas:Quantity [
+        meas:hasDimension dim:Temperature
+        foundation:specificallyDependentOn MtLemmon_TestFacility
+    ]
+    instance MtLemmon_TestFacility_SysML_v2-Part-2a5de174-4dcb-4a45-a715-1d3786422036.MtLemmon_TestFacility_MinTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf MtLemmon_TestFacility_SysML_v2-Part-2a5de174-4dcb-4a45-a715-1d3786422036.MtLemmon_TestFacility_MinTemp
+        meas:hasUnit units:degF
+        meas:hasValue "32"^^rdfs:Literal
+    ]
+    instance MtLemmon_TestFacility_SysML_v2-Part-2a5de174-4dcb-4a45-a715-1d3786422036.MtLemmon_TestFacility_MaxTemp : meas:Quantity [
+        meas:hasDimension dim:Temperature
+        foundation:specificallyDependentOn MtLemmon_TestFacility
+    ]
+    instance MtLemmon_TestFacility_SysML_v2-Part-2a5de174-4dcb-4a45-a715-1d3786422036.MtLemmon_TestFacility_MaxTemp_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf MtLemmon_TestFacility_SysML_v2-Part-2a5de174-4dcb-4a45-a715-1d3786422036.MtLemmon_TestFacility_MaxTemp
+        meas:hasUnit units:degF
+        meas:hasValue "65"^^rdfs:Literal
+    ]
+    instance T1_2-YumaTF_Stopwatch_Prescision : meas:Quantity [
+        foundation:hasID "T1_2-YumaTF_Stopwatch_Prescision"
+        foundation:hasName "T1_2-YumaTF_Stopwatch_Prescision"
+        foundation:specificallyDependentOn YumaTF_Stopwatch
+        meas:hasDimension dim:Time
+    ]
+    instance T1_2-YumaTF_Stopwatch_Prescision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_2-YumaTF_Stopwatch_Prescision
+        meas:hasUnit units:second
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance T1_2-Battery_Voltage_Start : meas:Quantity [
+        foundation:hasID "T1_2-Battery_Voltage_Start"
+        foundation:hasName "T1_2-Battery_Voltage_Start"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T1_2-Battery_Voltage_Start_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_2-Battery_Voltage_Start
+        meas:hasUnit units:V
+        meas:hasValue "4.65"^^rdfs:Literal
+    ]
+    instance TP2 : test:TestProcedure [
+        foundation:hasID "LegoRoverProject_TestStrategy.TP2"
+        foundation:hasName "TP2"
+        info:prescribes t1_4
+        info:prescribes t1_2
+    ]
+    instance T1_3-Battery_Life : meas:Quantity [
+        foundation:hasID "T1_3-Battery_Life"
+        foundation:hasName "T1_3-Battery_Life"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Time
+    ]
+    instance T1_3-Battery_Life_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_3-Battery_Life
+        meas:hasUnit units:minute
+        meas:hasValue "104"^^rdfs:Literal
+    ]
+    instance T3_4-Battery_Life : meas:Quantity [
+        foundation:hasID "T3_4-Battery_Life"
+        foundation:hasName "T3_4-Battery_Life"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Time
+    ]
+    instance T3_4-Battery_Life_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_4-Battery_Life
+        meas:hasUnit units:minute
+        meas:hasValue "114"^^rdfs:Literal
+    ]
+    instance MtLemmonTF_Treadmill : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.MtLemmonTF_Treadmill"
+        foundation:hasName "MtLemmonTF_Treadmill"
+        loc:locatedAt MtLemmon_TestFacility
+    ]
+    instance T1_4-MtLemmonTF_Multimeter_Precision : meas:Quantity [
+        foundation:hasID "T1_4-MtLemmonTF_Multimeter_Precision"
+        foundation:hasName "T1_4-MtLemmonTF_Multimeter_Precision"
+        foundation:specificallyDependentOn MtLemmonTF_Multimeter
+        meas:hasDimension dim:Voltage
+    ]
+    instance T1_4-MtLemmonTF_Multimeter_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_4-MtLemmonTF_Multimeter_Precision
+        meas:hasUnit units:V
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance lego_Rover : sa:System [
+        foundation:hasID "LegoRoverProject_Architecture.lego_Rover"
+        foundation:hasName "lego_Rover"
+        foundation:contains lr_Comms
+        foundation:contains lr_Power
+        foundation:contains lr_Mobility
+    ]
+    instance T3_1-Battery_Voltage_End : meas:Quantity [
+        foundation:hasID "T3_1-Battery_Voltage_End"
+        foundation:hasName "T3_1-Battery_Voltage_End"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T3_1-Battery_Voltage_End_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_1-Battery_Voltage_End
+        meas:hasUnit units:V
+        meas:hasValue "0"^^rdfs:Literal
+    ]
+    instance T2_4-Battery_Voltage_End : meas:Quantity [
+        foundation:hasID "T2_4-Battery_Voltage_End"
+        foundation:hasName "T2_4-Battery_Voltage_End"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T2_4-Battery_Voltage_End_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_4-Battery_Voltage_End
+        meas:hasUnit units:V
+        meas:hasValue "0"^^rdfs:Literal
+    ]
+    instance T1_2-YumaTF_Multimeter_Precision : meas:Quantity [
+        foundation:hasID "T1_2-YumaTF_Multimeter_Precision"
+        foundation:hasName "T1_2-YumaTF_Multimeter_Precision"
+        foundation:specificallyDependentOn YumaTF_Multimeter
+        meas:hasDimension dim:Voltage
+    ]
+    instance T1_2-YumaTF_Multimeter_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_2-YumaTF_Multimeter_Precision
+        meas:hasUnit units:V
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance t3_2 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t3.t3_2"
+        foundation:hasName "Rover_TestStrategy.t3.t3_2"
+        agent:hasOutput T3_2-wheels_RotationalSpeed_Measurement
+        agent:hasOutput T3_2-Battery_Voltage_End_Measurement
+        agent:hasOutput T3_2-YumaTF_Thermometer_Precision_Measurement
+        agent:hasOutput T3_2-YumaTF_TestFacility_ActualTemp_Measurement
+        agent:hasOutput T3_2-YumaTF_Stopwatch_Prescision_Measurement
+        agent:hasOutput T3_2-YumaTF_Multimeter_Precision_Measurement
+        agent:hasOutput T3_2-Battery_Voltage_Start_Measurement
+        agent:hasOutput T3_2-Battery_Life_Measurement
+        req:verifies GID-63850
+        req:verifies GID-63853
+        event:hasParticipant YumaTF_MemoryStick
+        event:hasParticipant YumaTF_Multimeter
+        event:hasParticipant Yuma_Researcher
+        event:hasParticipant YumaTF_BatteryCharger
+        event:hasParticipant YumaTF_Fridge
+        event:hasParticipant YumaTF_Thermometer
+        event:hasParticipant YumaTF_Stopwatch
+        event:occursAt Yuma_TestFacility
+        test:hasTestSubject lego_Rover
+    ]
+    instance t3_2_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t3_2_Duration : meas:Quantity [
+        meas:hasDimension dim:Time
+        foundation:specificallyDependentOn t3_2
+    ]
+    instance t3_2_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t3_2_Duration_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf t3_2_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t3_2_Duration
+        meas:hasUnit units:day
+        meas:hasValue "7.5"^^rdfs:Literal
+    ]
+    instance MtLemmonTF_MemoryStick : foundation:ObjectAggregate [
+        foundation:hasID "LegoRoverProject_TestFacilities.MtLemmonTF_MemoryStick"
+        foundation:hasName "MtLemmonTF_MemoryStick"
+        loc:locatedAt MtLemmon_TestFacility
+    ]
+    instance GID-63851 : req:Requirement [
+        foundation:hasID "19544"
+        foundation:hasName "Terrain B"
+        foundation:hasNaturalLanguageDescription "The system shall operate in a high-friction terrain for at least 100 minutes "
+        info:prescribes lego_Rover
+    ]
+    instance t2_4 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t2.t2_4"
+        foundation:hasName "Rover_TestStrategy.t2.t2_4"
+        agent:hasOutput T2_4-wheels_RotationalSpeed_Measurement
+        agent:hasOutput T2_4-MtLemmonTF_Stopwatch_Prescision_Measurement
+        agent:hasOutput T2_4-MtLemmonTF_Multimeter_Precision_Measurement
+        agent:hasOutput T2_4-Battery_Voltage_End_Measurement
+        agent:hasOutput T2_4-Battery_Voltage_Start_Measurement
+        agent:hasOutput T2_4-MtLemmonTF_TestFacility_ActualTemp_Measurement
+        agent:hasOutput T2_4-Battery_Life_Measurement
+        agent:hasOutput T2_4-MtLemmonTF_Thermometer_Precision_Measurement
+        req:verifies GID-63854
+        req:verifies GID-63850
+        event:hasParticipant MtLemmonTF_MemoryStick
+        event:hasParticipant MtLemmonTF_Thermometer
+        event:hasParticipant MtLemmon_Researcher
+        event:hasParticipant MtLemmonTF_Stopwatch
+        event:hasParticipant MtLemmonTF_Multimeter
+        event:hasParticipant MtLemmonTF_BatteryCharger
+        event:occursAt MtLemmon_TestFacility
+        test:hasTestSubject lego_Rover
+    ]
+    instance t2_4_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t2_4_Duration : meas:Quantity [
+        meas:hasDimension dim:Time
+        foundation:specificallyDependentOn t2_4
+    ]
+    instance t2_4_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t2_4_Duration_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf t2_4_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t2_4_Duration
+        meas:hasUnit units:day
+        meas:hasValue "0.5"^^rdfs:Literal
+    ]
+    instance T1_3-Battery_Voltage_Start : meas:Quantity [
+        foundation:hasID "T1_3-Battery_Voltage_Start"
+        foundation:hasName "T1_3-Battery_Voltage_Start"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T1_3-Battery_Voltage_Start_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_3-Battery_Voltage_Start
+        meas:hasUnit units:V
+        meas:hasValue "4.81"^^rdfs:Literal
+    ]
+    instance t3_4 : test:Test [
+        foundation:hasID "LegoRoverProject_TestStrategy.Rover_TestStrategy.t3.t3_4"
+        foundation:hasName "Rover_TestStrategy.t3.t3_4"
+        agent:hasOutput T3_4-MtLemmonTF_Thermometer_Precision_Measurement
+        agent:hasOutput T3_4-Battery_Voltage_Start_Measurement
+        agent:hasOutput T3_4-MtLemmonTF_Stopwatch_Prescision_Measurement
+        agent:hasOutput T3_4-MtLemmonTF_TestFacility_ActualTemp_Measurement
+        agent:hasOutput T3_4-MtLemmonTF_Multimeter_Precision_Measurement
+        agent:hasOutput T3_4-Battery_Voltage_End_Measurement
+        agent:hasOutput T3_4-wheels_RotationalSpeed_Measurement
+        agent:hasOutput T3_4-Battery_Life_Measurement
+        req:verifies GID-63850
+        req:verifies GID-63854
+        event:hasParticipant MtLemmonTF_BatteryCharger
+        event:hasParticipant MtLemmonTF_Stopwatch
+        event:hasParticipant MtLemmonTF_Thermometer
+        event:hasParticipant MtLemmonTF_MemoryStick
+        event:hasParticipant MtLemmon_Researcher
+        event:hasParticipant MtLemmonTF_Multimeter
+        event:hasParticipant MtLemmonTF_Fridge
+        event:occursAt MtLemmon_TestFacility
+        test:hasTestSubject lego_Rover
+    ]
+    instance t3_4_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t3_4_Duration : meas:Quantity [
+        meas:hasDimension dim:Time
+        foundation:specificallyDependentOn t3_4
+    ]
+    instance t3_4_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t3_4_Duration_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf t3_4_SysML_v2-Action-a5518652-352a-4405-8579-025efda0b9a3.t3_4_Duration
+        meas:hasUnit units:day
+        meas:hasValue "7.5"^^rdfs:Literal
+    ]
+    instance T2_2-wheels_RotationalSpeed : meas:Quantity [
+        foundation:hasID "T2_2-wheels_RotationalSpeed"
+        foundation:hasName "T2_2-wheels_RotationalSpeed"
+        foundation:specificallyDependentOn wheels
+        meas:hasDimension dim:AngularSpeed
+    ]
+    instance T2_2-wheels_RotationalSpeed_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_2-wheels_RotationalSpeed
+        meas:hasUnit units:rpm
+        meas:hasValue "157"^^rdfs:Literal
+    ]
+    instance T2_3-Battery_Life : meas:Quantity [
+        foundation:hasID "T2_3-Battery_Life"
+        foundation:hasName "T2_3-Battery_Life"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Time
+    ]
+    instance T2_3-Battery_Life_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T2_3-Battery_Life
+        meas:hasUnit units:minute
+        meas:hasValue "104"^^rdfs:Literal
+    ]
+    instance T1_2-wheels_RotationalSpeed : meas:Quantity [
+        foundation:hasID "T1_2-wheels_RotationalSpeed"
+        foundation:hasName "T1_2-wheels_RotationalSpeed"
+        foundation:specificallyDependentOn wheels
+        meas:hasDimension dim:AngularSpeed
+    ]
+    instance T1_2-wheels_RotationalSpeed_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_2-wheels_RotationalSpeed
+        meas:hasUnit units:rpm
+        meas:hasValue "164"^^rdfs:Literal
+    ]
+    instance T3_2-YumaTF_Multimeter_Precision : meas:Quantity [
+        foundation:hasID "T3_2-YumaTF_Multimeter_Precision"
+        foundation:hasName "T3_2-YumaTF_Multimeter_Precision"
+        foundation:specificallyDependentOn YumaTF_Multimeter
+        meas:hasDimension dim:Voltage
+    ]
+    instance T3_2-YumaTF_Multimeter_Precision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_2-YumaTF_Multimeter_Precision
+        meas:hasUnit units:V
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance T1_3-Battery_Voltage_End : meas:Quantity [
+        foundation:hasID "T1_3-Battery_Voltage_End"
+        foundation:hasName "T1_3-Battery_Voltage_End"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T1_3-Battery_Voltage_End_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_3-Battery_Voltage_End
+        meas:hasUnit units:V
+        meas:hasValue "0"^^rdfs:Literal
+    ]
+    instance T3_4-MtLemmonTF_Stopwatch_Prescision : meas:Quantity [
+        foundation:hasID "T3_4-MtLemmonTF_Stopwatch_Prescision"
+        foundation:hasName "T3_4-MtLemmonTF_Stopwatch_Prescision"
+        foundation:specificallyDependentOn MtLemmonTF_Stopwatch
+        meas:hasDimension dim:Time
+    ]
+    instance T3_4-MtLemmonTF_Stopwatch_Prescision_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T3_4-MtLemmonTF_Stopwatch_Prescision
+        meas:hasUnit units:second
+        meas:hasValue "0.01"^^rdfs:Literal
+    ]
+    instance GID-63850 : req:Requirement [
+        foundation:hasID "19543"
+        foundation:hasName "Terrain A"
+        foundation:hasNaturalLanguageDescription "The system shall operate in a low-friction terrain for at least 100 minutes "
+        info:prescribes lego_Rover
+    ]
+    instance T1_1-Battery_Voltage_End : meas:Quantity [
+        foundation:hasID "T1_1-Battery_Voltage_End"
+        foundation:hasName "T1_1-Battery_Voltage_End"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T1_1-Battery_Voltage_End_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_1-Battery_Voltage_End
+        meas:hasUnit units:V
+        meas:hasValue "0"^^rdfs:Literal
+    ]
+    instance T1_4-Battery_Voltage_End : meas:Quantity [
+        foundation:hasID "T1_4-Battery_Voltage_End"
+        foundation:hasName "T1_4-Battery_Voltage_End"
+        foundation:specificallyDependentOn battery
+        meas:hasDimension dim:Voltage
+    ]
+    instance T1_4-Battery_Voltage_End_Measurement : meas:SimpleMeasurement [
+        meas:measurementOf T1_4-Battery_Voltage_End
+        meas:hasUnit units:V
+        meas:hasValue "0"^^rdfs:Literal
+    ]
+    instance UA : agent:Organization [
+        foundation:hasID "LegoRoverProject_TestFacilities.UA"
+        foundation:hasName "UA"
+    ]
+}

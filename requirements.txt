@@ -1,0 +1,7 @@
+streamlit==1.42.0
+numpy
+pandas
+plotly==5.22.0
+graphviz==0.20.3
+supabase
+num2words

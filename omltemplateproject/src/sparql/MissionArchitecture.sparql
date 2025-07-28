@@ -1,0 +1,33 @@
+PREFIX rdfs:		<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dc:			<http://purl.org/dc/elements/1.1/>
+PREFIX xsd:			<http://www.w3.org/2001/XMLSchema#>
+
+PREFIX foundation:	<http://uaontologies.com/UA_Foundation/UA_Foundation#>
+
+PREFIX agent:	<http://uaontologies.com/UA_Core/UA_Agent#>
+PREFIX event:	<http://uaontologies.com/UA_Core/UA_Event#>
+PREFIX info:	<http://uaontologies.com/UA_Core/UA_Information#>
+PREFIX loc:		<http://uaontologies.com/UA_Core/UA_Location#>
+PREFIX meas:	<http://uaontologies.com/UA_Core/UA_Measurement#>
+PREFIX own:		<http://uaontologies.com/UA_Core/UA_Ownership#>
+PREFIX prov:	<http://uaontologies.com/UA_Core/UA_Provenance#>
+
+PREFIX acq:		<http://uaontologies.com/UA_Domain/UA_Acquisition#>
+PREFIX data:	<http://uaontologies.com/UA_Domain/UA_DataManagement#>
+PREFIX mis:		<http://uaontologies.com/UA_Domain/UA_Mission#>
+PREFIX ms:		<http://uaontologies.com/UA_Domain/UA_ModelingAndSimulation#>
+PREFIX pm:		<http://uaontologies.com/UA_Domain/UA_ProjectManagement#>
+PREFIX req:		<http://uaontologies.com/UA_Domain/UA_Requirements#>
+PREFIX sw:		<http://uaontologies.com/UA_Domain/UA_Software#>
+PREFIX sa:		<http://uaontologies.com/UA_Domain/UA_SystemArchitecture#>
+PREFIX test:	<http://uaontologies.com/UA_Domain/UA_Test#>
+PREFIX mat:		<http://uaontologies.com/UA_Domain/UA_Materials#>
+
+
+SELECT DISTINCT ?Mission ?Env ?MissionEntities
+
+WHERE {
+	?Mission a mis:Mission .
+	?Mission foundation:contains ?Env .
+	?Env foundation:contains ?MissionEntities .	
+}
