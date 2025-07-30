@@ -115,7 +115,7 @@ def ensure_build_tools():
     • We are inside Streamlit Cloud.
     """
     # 1️⃣  Short‑circuit for local dev / already‑setup boxes
-    java_ok = _has_tool("java", r"version \"21\.")
+    java_ok = _has_tool("java", r"build 21\.")
     # gradle_ok = _has_tool("gradle")
     if java_ok and True:
         return                          # nothing to do
@@ -159,6 +159,8 @@ def ensure_build_tools():
 
     st.write(subprocess.run(["gradle", "--version"], capture_output=True, text=True).stdout)
     st.write(subprocess.run(["java", "--version"], capture_output=True, text=True).stdout)
+
+    st.write(_has_tool("java", r"build 21\."))
 
     st.stop()
 
