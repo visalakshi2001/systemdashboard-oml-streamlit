@@ -83,8 +83,8 @@ def _collect_selected_files(tree, checked):
 # --------------------------------------------------------------------------- #
 # ⬇️  Config
 JDK_URL = (
-    "https://github.com/adoptium/temurin21-binaries/releases/latest/"
-    "download/OpenJDK21U-jdk_x64_linux_hotspot.tar.gz"
+    "https://download.java.net/java/GA/jdk21.0.2/"
+    "f2283984656d49d69e91c558476027ac/13/GPL/openjdk-21.0.2_linux-x64_bin.tar.gz"
 )
 # GRADLE_URL = "https://services.gradle.org/distributions/gradle-8.14.2-bin.zip"
 # --------------------------------------------------------------------------- #
@@ -128,6 +128,13 @@ def ensure_build_tools():
             "Install them locally or run this app on Streamlit Cloud."
         )
         st.stop()
+    
+
+    st.write(os.environ)
+
+    st.write(subprocess.run(["java", "--version"], capture_output=True, text=True).stdout)
+
+    st.stop()
 
     # 2️⃣  Cloud bootstrap (same logic as before) ----------------------------
     home = Path.home()
