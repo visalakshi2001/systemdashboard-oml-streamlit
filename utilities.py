@@ -105,7 +105,7 @@ def _running_on_streamlit_cloud() -> bool:          # ⭐ NEW
     Streamlit Cloud sets a handful of env‑vars (most notably ST_FILESYSTEM_ROOT).
     Checking one that is unlikely to be set elsewhere keeps the test cheap.
     """
-    return "ST_FILESYSTEM_ROOT" in os.environ
+    return os.environ['HOSTNAME'] == 'streamlit'
 
 @st.cache_resource(show_spinner=False)
 def ensure_build_tools():
@@ -120,16 +120,14 @@ def ensure_build_tools():
     if java_ok and True:
         return                          # nothing to do
     
-    st.write(os.environ)
-    st.stop()
 
-    # if not _running_on_streamlit_cloud():              # ⭐ NEW
-    #     # Don’t mutate the local machine; just raise a helpful error.
-    #     st.error(
-    #         "Java 21 and/or Gradle not found on PATH.\n"
-    #         "Install them locally or run this app on Streamlit Cloud."
-    #     )
-    #     st.stop()
+    if not _running_on_streamlit_cloud():              # ⭐ NEW
+        # Don’t mutate the local machine; just raise a helpful error.
+        st.error(
+            "Java 21 and/or Gradle not found on PATH.\n"
+            "Install them locally or run this app on Streamlit Cloud."
+        )
+        st.stop()
 
     # 2️⃣  Cloud bootstrap (same logic as before) ----------------------------
     home = Path.home()
