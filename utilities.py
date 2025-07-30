@@ -121,6 +121,7 @@ def ensure_build_tools():
         return                          # nothing to do
     
     st.write(os.environ)
+    st.stop()
 
     # if not _running_on_streamlit_cloud():              # ⭐ NEW
     #     # Don’t mutate the local machine; just raise a helpful error.
