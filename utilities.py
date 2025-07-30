@@ -119,14 +119,16 @@ def ensure_build_tools():
     # gradle_ok = _has_tool("gradle")
     if java_ok and True:
         return                          # nothing to do
+    
+    st.write(os.environ)
 
-    if not _running_on_streamlit_cloud():              # ⭐ NEW
-        # Don’t mutate the local machine; just raise a helpful error.
-        st.error(
-            "Java 21 and/or Gradle not found on PATH.\n"
-            "Install them locally or run this app on Streamlit Cloud."
-        )
-        st.stop()
+    # if not _running_on_streamlit_cloud():              # ⭐ NEW
+    #     # Don’t mutate the local machine; just raise a helpful error.
+    #     st.error(
+    #         "Java 21 and/or Gradle not found on PATH.\n"
+    #         "Install them locally or run this app on Streamlit Cloud."
+    #     )
+    #     st.stop()
 
     # 2️⃣  Cloud bootstrap (same logic as before) ----------------------------
     home = Path.home()
