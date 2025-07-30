@@ -135,10 +135,11 @@ def ensure_build_tools():
     st.write(subprocess.run(["gradle", "--version"], capture_output=True, text=True).stdout)
     st.write(subprocess.run(["java", "--version"], capture_output=True, text=True).stdout)
 
-    st.stop()
-
     # 2️⃣  Cloud bootstrap (same logic as before) ----------------------------
     home = Path.home()
+
+    st.write(home)
+    st.stop()
 
     # -------- JDK -----------------------------------------------------------
     jdk_root = home / ".jdk21"
@@ -169,6 +170,9 @@ def ensure_build_tools():
     # os.environ["PATH"] = f"{gradle_home}/bin:" + os.environ["PATH"]
 
     # -------- sanity check --------------------------------------------------
+
+
+
     try:
         subprocess.run(["java", "-version"], check=True, capture_output=True)
         # subprocess.run(["gradle", "--version"], check=True, capture_output=True)
