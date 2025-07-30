@@ -110,16 +110,15 @@ def _running_on_streamlit_cloud() -> bool:          # ⭐ NEW
 # @st.cache_resource(show_spinner=False)
 def ensure_build_tools():
     """
-    Download & install JDK‑21 + Gradle in userland IF:
+    Download & install JDK‑21 in Debian stable (bookworm) IF:
     • They’re missing, AND
     • We are inside Streamlit Cloud.
     """
     # 1️⃣  Short‑circuit for local dev / already‑setup boxes
     java_ok = _has_tool("java", r"build 21\.")
-    # gradle_ok = _has_tool("gradle")
-    if java_ok and True:
+
+    if java_ok:
         return                          # nothing to do
-    
 
     if not _running_on_streamlit_cloud():              # ⭐ NEW
         # Don’t mutate the local machine; just raise a helpful error.
@@ -128,19 +127,10 @@ def ensure_build_tools():
             "Install them locally or run this app on Streamlit Cloud."
         )
         st.stop()
-    
-
-    st.write(os.environ)
-
-    st.write(subprocess.run(["gradle", "--version"], capture_output=True, text=True).stdout)
-    st.write(subprocess.run(["java", "--version"], capture_output=True, text=True).stdout)
 
     # 2️⃣  Cloud bootstrap (same logic as before) ----------------------------
     home = Path.home()
-
-    st.write(home)
     
-    st.write(":violet[Installing Java 21]")
     # -------- JDK -----------------------------------------------------------
     jdk_root = home / ".jdk21"
     java_bin = jdk_root / "bin" / "java"
@@ -157,34 +147,11 @@ def ensure_build_tools():
     os.environ["JAVA_HOME"] = str(jdk_root)
     os.environ["PATH"] = f"{jdk_root}/bin:" + os.environ["PATH"]
 
-    st.write(subprocess.run(["gradle", "--version"], capture_output=True, text=True).stdout)
-    st.write(subprocess.run(["java", "--version"], capture_output=True, text=True).stdout)
-
-    st.write(_has_tool("java", r"build 21\."))
-
-    st.stop()
-
-    # -------- Gradle --------------------------------------------------------
-    # gradle_home = home / ".gradle-bin"
-    # gradle_cmd = gradle_home / "bin" / "gradle"
-    # if not gradle_cmd.exists():
-    #     zip_path = home / "gradle.zip"
-    #     urllib.request.urlretrieve(GRADLE_URL, zip_path)
-    #     with zipfile.ZipFile(zip_path) as z:
-    #         z.extractall(home)
-    #     extracted = next(home.glob("gradle-*"))
-    #     extracted.rename(gradle_home)
-    # os.environ["PATH"] = f"{gradle_home}/bin:" + os.environ["PATH"]
-
     # -------- sanity check --------------------------------------------------
-
-
-
     try:
         subprocess.run(["java", "-version"], check=True, capture_output=True)
-        # subprocess.run(["gradle", "--version"], check=True, capture_output=True)
     except subprocess.CalledProcessError as e:
-        st.error("Java/Gradle bootstrap failed:\n" + e.stderr.decode())
+        st.error("Java bootstrap failed:\n" + e.stderr.decode())
         st.stop()
 
 def _run_installation_if_streamlit_env():
