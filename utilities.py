@@ -107,7 +107,7 @@ def _running_on_streamlit_cloud() -> bool:          # ⭐ NEW
     """
     return os.environ['HOSTNAME'] == 'streamlit'
 
-# @st.cache_resource(show_spinner=False)
+@st.cache_resource(show_spinner=True)
 def ensure_build_tools():
     """
     Download & install JDK‑21 in Debian stable (bookworm) IF:
