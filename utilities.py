@@ -132,16 +132,15 @@ def ensure_build_tools():
 
     st.write(os.environ)
 
-    # st.write(subprocess.run(["gradle", "--version"], capture_output=True, text=True).stdout)
-    # st.write(subprocess.run(["java", "--version"], capture_output=True, text=True).stdout)
+    st.write(subprocess.run(["gradle", "--version"], capture_output=True, text=True).stdout)
+    st.write(subprocess.run(["java", "--version"], capture_output=True, text=True).stdout)
 
     # 2️⃣  Cloud bootstrap (same logic as before) ----------------------------
     home = Path.home()
 
-
     st.write(home)
-    st.stop()
-
+    
+    st.write(":violet[Installing Java 21]")
     # -------- JDK -----------------------------------------------------------
     jdk_root = home / ".jdk21"
     java_bin = jdk_root / "bin" / "java"
@@ -157,6 +156,11 @@ def ensure_build_tools():
         inner.rmdir()
     os.environ["JAVA_HOME"] = str(jdk_root)
     os.environ["PATH"] = f"{jdk_root}/bin:" + os.environ["PATH"]
+
+    st.write(subprocess.run(["gradle", "--version"], capture_output=True, text=True).stdout)
+    st.write(subprocess.run(["java", "--version"], capture_output=True, text=True).stdout)
+
+    st.stop()
 
     # -------- Gradle --------------------------------------------------------
     # gradle_home = home / ".gradle-bin"
