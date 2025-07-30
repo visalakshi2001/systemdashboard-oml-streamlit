@@ -107,7 +107,7 @@ def _running_on_streamlit_cloud() -> bool:          # ⭐ NEW
     """
     return os.environ['HOSTNAME'] == 'streamlit'
 
-@st.cache_resource(show_spinner=False)
+# @st.cache_resource(show_spinner=False)
 def ensure_build_tools():
     """
     Download & install JDK‑21 + Gradle in userland IF:
@@ -132,6 +132,7 @@ def ensure_build_tools():
 
     st.write(os.environ)
 
+    st.write(subprocess.run(["gradle", "--version"], capture_output=True, text=True).stdout)
     st.write(subprocess.run(["java", "--version"], capture_output=True, text=True).stdout)
 
     st.stop()
