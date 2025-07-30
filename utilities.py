@@ -132,11 +132,12 @@ def ensure_build_tools():
 
     st.write(os.environ)
 
-    st.write(subprocess.run(["gradle", "--version"], capture_output=True, text=True).stdout)
-    st.write(subprocess.run(["java", "--version"], capture_output=True, text=True).stdout)
+    # st.write(subprocess.run(["gradle", "--version"], capture_output=True, text=True).stdout)
+    # st.write(subprocess.run(["java", "--version"], capture_output=True, text=True).stdout)
 
     # 2️⃣  Cloud bootstrap (same logic as before) ----------------------------
     home = Path.home()
+
 
     st.write(home)
     st.stop()
