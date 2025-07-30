@@ -1,6 +1,11 @@
 import io, zipfile, mimetypes
 from pathlib import Path
 
+# for build tools configuration
+import os, tarfile, shutil, urllib.request, subprocess
+import streamlit as st
+import re
+
 
 def _fetch_file_bytes(base_dir: Path, rel_path: str) -> bytes | None:
     """Return raw bytes of a result file inside `base_dir` or None if missing."""
@@ -72,3 +77,100 @@ def _collect_selected_files(tree, checked):
     seen = set()
     uniq_ordered = [f for f in selected_files if not (f in seen or seen.add(f))]
     return uniq_ordered
+
+
+
+# --------------------------------------------------------------------------- #
+# ⬇️  Config
+JDK_URL = (
+    "https://github.com/adoptium/temurin21-binaries/releases/latest/"
+    "download/OpenJDK21U-jdk_x64_linux_hotspot.tar.gz"
+)
+# GRADLE_URL = "https://services.gradle.org/distributions/gradle-8.14.2-bin.zip"
+# --------------------------------------------------------------------------- #
+
+def _has_tool(cmd: str, pattern: str | None = None) -> bool:
+    """Return True if `cmd` exists and (optionally) its version matches `pattern`."""
+    try:
+        out = subprocess.check_output([cmd, "--version"], stderr=subprocess.STDOUT)
+        if pattern:
+            return bool(re.search(pattern.encode(), out))
+        return True
+    except Exception:
+        return False
+
+
+def _running_on_streamlit_cloud() -> bool:          # ⭐ NEW
+    """
+    Streamlit Cloud sets a handful of env‑vars (most notably ST_FILESYSTEM_ROOT).
+    Checking one that is unlikely to be set elsewhere keeps the test cheap.
+    """
+    return "ST_FILESYSTEM_ROOT" in os.environ
+
+@st.cache_resource(show_spinner=False)
+def ensure_build_tools():
+    """
+    Download & install JDK‑21 + Gradle in userland IF:
+    • They’re missing, AND
+    • We are inside Streamlit Cloud.
+    """
+    # 1️⃣  Short‑circuit for local dev / already‑setup boxes
+    java_ok = _has_tool("java", r"version \"21\.")
+    # gradle_ok = _has_tool("gradle")
+    if java_ok and True:
+        return                          # nothing to do
+
+    if not _running_on_streamlit_cloud():              # ⭐ NEW
+        # Don’t mutate the local machine; just raise a helpful error.
+        st.error(
+            "Java 21 and/or Gradle not found on PATH.\n"
+            "Install them locally or run this app on Streamlit Cloud."
+        )
+        st.stop()
+
+    # 2️⃣  Cloud bootstrap (same logic as before) ----------------------------
+    home = Path.home()
+
+    # -------- JDK -----------------------------------------------------------
+    jdk_root = home / ".jdk21"
+    java_bin = jdk_root / "bin" / "java"
+    if not java_bin.exists():
+        tgz = home / "jdk21.tar.gz"
+        urllib.request.urlretrieve(JDK_URL, tgz)
+        jdk_root.mkdir(parents=True, exist_ok=True)
+        with tarfile.open(tgz, "r:gz") as t:
+            t.extractall(path=jdk_root)
+        inner = next(jdk_root.glob("jdk-*"))
+        for item in inner.iterdir():
+            shutil.move(str(item), jdk_root)
+        inner.rmdir()
+    os.environ["JAVA_HOME"] = str(jdk_root)
+    os.environ["PATH"] = f"{jdk_root}/bin:" + os.environ["PATH"]
+
+    # -------- Gradle --------------------------------------------------------
+    # gradle_home = home / ".gradle-bin"
+    # gradle_cmd = gradle_home / "bin" / "gradle"
+    # if not gradle_cmd.exists():
+    #     zip_path = home / "gradle.zip"
+    #     urllib.request.urlretrieve(GRADLE_URL, zip_path)
+    #     with zipfile.ZipFile(zip_path) as z:
+    #         z.extractall(home)
+    #     extracted = next(home.glob("gradle-*"))
+    #     extracted.rename(gradle_home)
+    # os.environ["PATH"] = f"{gradle_home}/bin:" + os.environ["PATH"]
+
+    # -------- sanity check --------------------------------------------------
+    try:
+        subprocess.run(["java", "-version"], check=True, capture_output=True)
+        # subprocess.run(["gradle", "--version"], check=True, capture_output=True)
+    except subprocess.CalledProcessError as e:
+        st.error("Java/Gradle bootstrap failed:\n" + e.stderr.decode())
+        st.stop()
+
+def _run_installation_if_streamlit_env():
+    """
+    Check if the current OS is Debian-based and is Streamlit.
+    """
+    if os.name == "posix":
+        ensure_build_tools()
+    return

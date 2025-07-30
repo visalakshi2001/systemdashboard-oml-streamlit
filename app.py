@@ -10,6 +10,8 @@ import teststrategy
 import testresults
 import issueswarnings
 
+from utilities import _run_installation_if_streamlit_env
+
 
 st.set_page_config(page_title="SIE 523 Dashboards", page_icon="🛰️", layout="wide")
 
@@ -147,6 +149,7 @@ def main():
 
 
 if __name__ == "__main__":
+    _run_installation_if_streamlit_env()  # Ensure Java/Gradle are installed
     init_session()
     panel()
     main()

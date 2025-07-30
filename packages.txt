@@ -1,3 +1,6 @@
 build-essential
-openjdk-21-jdk
 gradle
+wget
+unzip
+zip
+tar
