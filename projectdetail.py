@@ -372,7 +372,7 @@ def build_oml_form():
                         st.markdown("### ⬇️ Download")
                         selected = st.session_state.sparql_selected_nodes
                         if selected:
-                            with st.expander("Selected ficheckedles"):
+                            with st.expander("Selected files"):
                                 for fp in selected:
                                     st.markdown(f"• {fp}")
                             # decide MIME for single‑file case
