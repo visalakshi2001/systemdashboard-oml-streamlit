@@ -138,7 +138,7 @@ def replace_data(project):
     tabs = project["views"]
 
     st.markdown("### Select tab(s) you want to modify")
-    sel_tabs = st.multiselect("Tabs", options=tabs)
+    sel_tabs = st.multiselect("Tabs", options=[x for x in tabs if x != "Warnings/Issues"])
 
     # --------------------------------------- current & required filenames
     req_json = {f"{tie}.json" for tab in sel_tabs for tie in DATA_TIES[tab]}
