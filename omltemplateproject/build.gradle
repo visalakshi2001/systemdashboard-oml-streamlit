@@ -54,7 +54,7 @@ repositories {
 dependencies {
     oml "io.opencaesar.ontologies:core-vocabularies:5.+"
     // //oml "io.opencaesar.ontologies:imce-vocabularies:$imceVersion"
-    oml "com.uaontologies:UA_Foundation:+"
+    oml "io.github.visalakshi2001:UA_Foundation:+"
     oml "com.uaontologies:UA_Core:+"
     oml "com.uaontologies:UA_Domain:+"
     oml "com.uaontologies:UA_Libraries:+"

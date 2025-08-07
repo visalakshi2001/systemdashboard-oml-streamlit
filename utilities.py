@@ -86,7 +86,6 @@ JDK_URL = (
     "https://download.java.net/java/GA/jdk21.0.2/"
     "f2283984656d49d69e91c558476027ac/13/GPL/openjdk-21.0.2_linux-x64_bin.tar.gz"
 )
-# GRADLE_URL = "https://services.gradle.org/distributions/gradle-8.14.2-bin.zip"
 # --------------------------------------------------------------------------- #
 
 def _has_tool(cmd: str, pattern: str | None = None) -> bool:
@@ -113,6 +112,9 @@ def ensure_build_tools():
     Download & install JDK‑21 in Debian stable (bookworm) IF:
     • They’re missing, AND
     • We are inside Streamlit Cloud.
+
+    Thanks to "https://green.cloud/docs/how-to-install-java-jdk-21-or-openjdk-21-on-debian-12/"
+
     """
     # 1️⃣  Short‑circuit for local dev / already‑setup boxes
     java_ok = _has_tool("java", r"build 21\.")
