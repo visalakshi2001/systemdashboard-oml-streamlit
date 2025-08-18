@@ -8,6 +8,14 @@ import io
 import xml.etree.ElementTree as ET
 from generate_error import parse_failure_block, failure_to_dataframe, natural_language_message
 
+from pathlib import Path
+from utilities import (
+    session_tmp_dir,
+    discover_json_basenames,
+    suggest_tabs_from_json,
+    materialize_dashboard,
+)
+
 
 VIEW_OPTIONS = [
     "Architecture",
@@ -28,105 +36,105 @@ DATA_TIES = {
     # (Warnings/Issues pulls from these same files, so no separate entry needed)
 }
 
-@st.dialog("Project Details")
-def project_form(mode=1):
-    if mode == 1:
-        st.write("Fill in the new dashboard details. **'Home Page' view is always included.**")
-        st.caption("*Fields marked **(:red[*])** are required*")
-        with st.form("new_proj_form"):
-            name = st.text_input("Project (Dashboard) Name **:red[*]**", key="project_name")
-            description = st.text_area("Project Description", key="project_description")
-            views = st.multiselect(
-                "Select additional views to include",
-                VIEW_OPTIONS,
-                key="project_views",
-            )
+# @st.dialog("Project Details")
+# def project_form(mode=1):
+#     if mode == 1:
+#         st.write("Fill in the new dashboard details. **'Home Page' view is always included.**")
+#         st.caption("*Fields marked **(:red[*])** are required*")
+#         with st.form("new_proj_form"):
+#             name = st.text_input("Project (Dashboard) Name **:red[*]**", key="project_name")
+#             description = st.text_area("Project Description", key="project_description")
+#             views = st.multiselect(
+#                 "Select additional views to include",
+#                 VIEW_OPTIONS,
+#                 key="project_views",
+#             )
 
-            submitted = st.form_submit_button("Create Project")
-            if submitted:
-                if name.strip() == "":
-                    st.write("❗ :red[Name cannot be empty]")
-                    st.stop()
+#             submitted = st.form_submit_button("Create Project")
+#             if submitted:
+#                 if name.strip() == "":
+#                     st.write("❗ :red[Name cannot be empty]")
+#                     st.stop()
                 
-                # Persist project details in session_state
-                projectlist = st.session_state['projectlist']
+#                 # Persist project details in session_state
+#                 projectlist = st.session_state['projectlist']
 
-                # 🚫 Duplicate‑name guard  (case‑insensitive)
-                if any(p["name"].lower() == name.lower() for p in projectlist):
-                    st.error(f"A project called **{name}** already exists. Pick another name.")
-                    st.stop()
+#                 # 🚫 Duplicate‑name guard  (case‑insensitive)
+#                 if any(p["name"].lower() == name.lower() for p in projectlist):
+#                     st.error(f"A project called **{name}** already exists. Pick another name.")
+#                     st.stop()
 
-                project_folder = os.path.join(REPORTS_ROOT, name.lower().replace(" ", "_"))
-                os.makedirs(project_folder, exist_ok=True)
+#                 project_folder = os.path.join(REPORTS_ROOT, name.lower().replace(" ", "_"))
+#                 os.makedirs(project_folder, exist_ok=True)
 
-                projectlist.append({
-                    'id': len(projectlist)+1, 
-                    'name': name, 
-                    'description': description, 
-                    'views': ["Home Page"] + views, 
-                    'folder': project_folder
-                })
-                st.session_state['projectlist'] = projectlist
-                st.session_state["currproject"] = name          # immediately select it
+#                 projectlist.append({
+#                     'id': len(projectlist)+1, 
+#                     'name': name, 
+#                     'description': description, 
+#                     'views': ["Home Page"] + views, 
+#                     'folder': project_folder
+#                 })
+#                 st.session_state['projectlist'] = projectlist
+#                 st.session_state["currproject"] = name          # immediately select it
 
-                # Rerun to display the new dashboard immediately
-                st.rerun()
+#                 # Rerun to display the new dashboard immediately
+#                 st.rerun()
     
-    if mode == 2:
-        currproject = st.session_state['currproject']
-        projectlist = st.session_state['projectlist']
-        details = [p for p in projectlist if p['name'] == currproject][0]
-        index = projectlist.index(details)
+#     if mode == 2:
+#         currproject = st.session_state['currproject']
+#         projectlist = st.session_state['projectlist']
+#         details = [p for p in projectlist if p['name'] == currproject][0]
+#         index = projectlist.index(details)
         
-        # if "Home Page" in details['views']:
-        #     details['views'].remove("Home Page")
-        # ⚠️  **No in‑place mutation** – copy views first
-        current_views = [v for v in details["views"] if v != "Home Page"]
+#         # if "Home Page" in details['views']:
+#         #     details['views'].remove("Home Page")
+#         # ⚠️  **No in‑place mutation** – copy views first
+#         current_views = [v for v in details["views"] if v != "Home Page"]
 
-        st.write("Edit project details")
+#         st.write("Edit project details")
 
-        with st.form("edit_proj_form"):
-            name = st.text_input("Project Name", value=details['name'], key="edit_project_name")
-            description = st.text_area("Description", value=details['description'], key="edit_project_description")
-            views = st.multiselect(
-                "Select Views", 
-                options=VIEW_OPTIONS,
-                default=current_views,
-                key="edit_project_views")
+#         with st.form("edit_proj_form"):
+#             name = st.text_input("Project Name", value=details['name'], key="edit_project_name")
+#             description = st.text_area("Description", value=details['description'], key="edit_project_description")
+#             views = st.multiselect(
+#                 "Select Views", 
+#                 options=VIEW_OPTIONS,
+#                 default=current_views,
+#                 key="edit_project_views")
 
-            submitted = st.form_submit_button("Save Project")
-            if submitted:
-                if name == "":
-                    st.write("❗ :red[Name cannot be empty]")
-                    st.stop()
+#             submitted = st.form_submit_button("Save Project")
+#             if submitted:
+#                 if name == "":
+#                     st.write("❗ :red[Name cannot be empty]")
+#                     st.stop()
                 
-                # 🚫 Duplicate‑name guard (exclude the record being edited)
-                if any(
-                    (i != index) and (p["name"].lower() == name.lower())
-                    for i, p in enumerate(projectlist)
-                ):
-                    st.error(f"Another project is already named **{name}**.")
-                    st.stop()
+#                 # 🚫 Duplicate‑name guard (exclude the record being edited)
+#                 if any(
+#                     (i != index) and (p["name"].lower() == name.lower())
+#                     for i, p in enumerate(projectlist)
+#                 ):
+#                     st.error(f"Another project is already named **{name}**.")
+#                     st.stop()
                 
-                old_folder = details["folder"]
-                new_folder = os.path.join(REPORTS_ROOT, name.lower().replace(" ", "_"))
+#                 old_folder = details["folder"]
+#                 new_folder = os.path.join(REPORTS_ROOT, name.lower().replace(" ", "_"))
 
-                if old_folder != new_folder:
-                    shutil.move(old_folder, new_folder)            # rename directory
+#                 if old_folder != new_folder:
+#                     shutil.move(old_folder, new_folder)            # rename directory
 
 
-                projectlist[index] = {
-                    'id': details['id'], 
-                    'name': name, 
-                    'description': description, 
-                    'views': ["Home Page"] + views, 
-                    'folder': new_folder,
-                }
-                st.session_state['projectlist'] = projectlist
-                st.session_state["currproject"] = name
+#                 projectlist[index] = {
+#                     'id': details['id'], 
+#                     'name': name, 
+#                     'description': description, 
+#                     'views': ["Home Page"] + views, 
+#                     'folder': new_folder,
+#                 }
+#                 st.session_state['projectlist'] = projectlist
+#                 st.session_state["currproject"] = name
 
-                # Rerun to display the new dashboard immediately
-                st.rerun()
+#                 # Rerun to display the new dashboard immediately
+#                 st.rerun()
 
 @st.dialog("Select a tab below and replace its data")
 def replace_data(project):
@@ -341,64 +349,80 @@ def build_oml_form():
                         st.code(qlog_text, language="bash")
 
                 if st.session_state.query_code == 0:
-                    cols = st.columns(2)
-                    with cols[0]:
-                        # surface any result files that Gradle placed into build/results
-                        results = st.session_state.query_results
-                        build_results_dir = BUILD_DIR / "results"
-                        all_files = [
-                            str(p.relative_to(build_results_dir).as_posix())
-                            for p in build_results_dir.rglob("*")
-                            if p.is_file()
-                        ]
-                        if results:
-                            st.markdown("### 📁 Query Result Files")
-                            st.caption(":green[Select files to download them individually or as a ZIP]")
-                            st.session_state["dir_tree"] = _build_tree(all_files)
-                            tree_ret = tree_select(
-                                st.session_state["dir_tree"],
-                                checked=[],
-                                expanded=["results"],
-                                key="sparql_tree_select",
-                            )
-                            if tree_ret:
-                                checked_set = set(tree_ret.get("checked", []))
-                                st.session_state.sparql_selected_nodes = _collect_selected_files(
-                                    st.session_state["dir_tree"], checked_set
-                                )
-                            else:
-                                st.session_state.sparql_selected_nodes = []
-                    with cols[1]:
-                        st.markdown("### ⬇️ Download")
-                        selected = st.session_state.sparql_selected_nodes
-                        if selected:
-                            with st.expander("Selected files"):
-                                for fp in selected:
-                                    st.markdown(f"• {fp}")
-                            # decide MIME for single‑file case
-                            if len(selected) == 1:
-                                sel_path = selected[0]
-                                data = _fetch_file_bytes(build_results_dir, sel_path)
-                                if data is not None:
-                                    mime, _ = mimetypes.guess_type(sel_path)
-                                    st.download_button(
-                                        label="Download file",
-                                        data=data,
-                                        file_name=sel_path,
-                                        mime=mime or "application/octet-stream",
-                                        type="primary",
-                                        icon="📃",
-                                    )
-                            else:
-                                zip_buf = _zip_files(build_results_dir, selected)
-                                st.download_button(
-                                    label="Download selected as ZIP",
-                                    data=zip_buf,
-                                    file_name="sparql_results_bundle.zip",
-                                    mime="application/zip",
-                                    type="primary",
-                                    icon="📦",
-                                )
+                    results = st.session_state.query_results
+                    build_results_dir = BUILD_DIR / "results"
+
+                    json_files = [p for p in build_results_dir.rglob("*.json")]
+                    if json_files:
+                        st.markdown("### 📊 Create a Dashboard from these results")
+                        if st.button("Use these results to create a dashboard", type="primary", icon="🧱"):
+                            tmp = session_tmp_dir("sparql")
+                            for p in json_files:
+                                shutil.copy2(p, tmp / p.name)
+                            st.session_state["retained_json_dir"] = str(tmp)
+                            # Open the common wizard; no duplicate logic
+                            st.session_state["create_dashboard_from_retained"] = True
+                            st.rerun() #rerun to close current dialog and open the project creation form
+                    else:
+                        st.info("No JSON results were generated. Upload or add SPARQL queries and re-run.")
+                    # cols = st.columns(2)
+                    # with cols[0]:
+                    #     # surface any result files that Gradle placed into build/results
+                    #     results = st.session_state.query_results
+                    #     build_results_dir = BUILD_DIR / "results"
+                    #     all_files = [
+                    #         str(p.relative_to(build_results_dir).as_posix())
+                    #         for p in build_results_dir.rglob("*")
+                    #         if p.is_file()
+                    #     ]
+                    #     if results:
+                    #         st.markdown("### 📁 Query Result Files")
+                    #         st.caption(":green[Select files to download them individually or as a ZIP]")
+                    #         st.session_state["dir_tree"] = _build_tree(all_files)
+                    #         tree_ret = tree_select(
+                    #             st.session_state["dir_tree"],
+                    #             checked=[],
+                    #             expanded=["results"],
+                    #             key="sparql_tree_select",
+                    #         )
+                    #         if tree_ret:
+                    #             checked_set = set(tree_ret.get("checked", []))
+                    #             st.session_state.sparql_selected_nodes = _collect_selected_files(
+                    #                 st.session_state["dir_tree"], checked_set
+                    #             )
+                    #         else:
+                    #             st.session_state.sparql_selected_nodes = []
+                    # with cols[1]:
+                    #     st.markdown("### ⬇️ Download")
+                    #     selected = st.session_state.sparql_selected_nodes
+                    #     if selected:
+                    #         with st.expander("Selected files"):
+                    #             for fp in selected:
+                    #                 st.markdown(f"• {fp}")
+                    #         # decide MIME for single‑file case
+                    #         if len(selected) == 1:
+                    #             sel_path = selected[0]
+                    #             data = _fetch_file_bytes(build_results_dir, sel_path)
+                    #             if data is not None:
+                    #                 mime, _ = mimetypes.guess_type(sel_path)
+                    #                 st.download_button(
+                    #                     label="Download file",
+                    #                     data=data,
+                    #                     file_name=sel_path,
+                    #                     mime=mime or "application/octet-stream",
+                    #                     type="primary",
+                    #                     icon="📃",
+                    #                 )
+                    #         else:
+                    #             zip_buf = _zip_files(build_results_dir, selected)
+                    #             st.download_button(
+                    #                 label="Download selected as ZIP",
+                    #                 data=zip_buf,
+                    #                 file_name="sparql_results_bundle.zip",
+                    #                 mime="application/zip",
+                    #                 type="primary",
+                    #                 icon="📦",
+                    #             )
                 elif st.session_state.query_code == 1:
                     pass
         elif st.session_state.build_code == 1:
@@ -415,3 +439,136 @@ def build_oml_form():
                 )
             else:
                 st.error("Reasoning XML file not found. Please check the build logs for more details.")
+
+
+@st.dialog("New project from JSONs")
+def new_project_from_json_form():
+    """
+    Upload SPARQL JSON files, stage them in a temp dir, and reuse project_form(mode='from_uploads').
+    """
+    uploaded = st.file_uploader("Upload one or more SPARQL result JSON files", type=["json"], accept_multiple_files=True, key="json_uploads")
+    if not uploaded:
+        st.caption("Tip: You can upload the files exported by the SPARQL step (e.g., TestFacilities.json, Requirements.json).")
+    continue_clicked = st.button("Continue", type="primary", disabled=not uploaded)
+
+    if continue_clicked and uploaded:
+        tmp = session_tmp_dir("json_uploads")
+        for uf in uploaded:
+            (tmp / uf.name).write_bytes(uf.read())
+        # Reuse the common wizard (single source of truth)
+        project_form(mode="from_uploads", json_dir=str(tmp))
+
+
+@st.dialog("Project Details")
+def project_form(mode=1, *, json_dir: str | None = None):
+    """
+    Modes:
+      1 or "new_blank"   -> existing new dashboard form (no JSON processing)
+      "from_retained"    -> read JSONs from st.session_state.retained_json_dir
+      "from_uploads"     -> read JSONs from 'json_dir' (staged upload dir)
+    """
+    # -------------------- NEW JSON-backed creation modes --------------------
+    if mode in ("from_retained", "from_uploads"):
+        # Resolve source dir
+        if mode == "from_retained":
+            src_dir = st.session_state.get("retained_json_dir")
+            if not src_dir:
+                st.error("No retained SPARQL results found in this session.")
+                st.stop()
+            src_dir = Path(src_dir)
+        else:  # from_uploads
+            if not json_dir:
+                st.error("No uploaded JSON directory provided.")
+                st.stop()
+            src_dir = Path(json_dir)
+
+        # Discover JSONs and suggest tabs
+        basenames = discover_json_basenames(src_dir)
+        suggested = suggest_tabs_from_json(basenames, DATA_TIES)
+
+        st.write("Create a dashboard from SPARQL JSON results.")
+        st.caption("**Home Page** is always included.")
+
+        with st.form("new_proj_from_json_form"):
+            name = st.text_input("Project (Dashboard) Name **:red[*]**", key=f"project_name_{mode}")
+            description = st.text_area("Project Description", key=f"project_description_{mode}")
+
+            if not basenames:
+                st.warning("No JSON files detected. Upload or generate SPARQL results first.")
+                disabled = True
+            else:
+                disabled = False
+
+            # Only offer valid tabs (their requirements fully present)
+            views = st.multiselect(
+                "Select views to include",
+                options=[v for v in VIEW_OPTIONS if v != "Home Page"],
+                default=suggested,
+                key=f"project_views_{mode}",
+            )
+
+            submitted = st.form_submit_button("Create Project", disabled=disabled)
+            if submitted:
+                if name.strip() == "":
+                    st.error("Name cannot be empty.")
+                    st.stop()
+
+                # Materialize once (no duplication)
+                project, target_path, final_name = materialize_dashboard(
+                    name=name.strip(),
+                    description=description.strip(),
+                    tabs=views,
+                    json_src_dir=src_dir,
+                    DATA_TIES=DATA_TIES,
+                    reports_root=REPORTS_ROOT,
+                )
+
+                # Attach an id consistent with existing behavior
+                projectlist = st.session_state.get("projectlist", [])
+                project["id"] = len(projectlist) + 1
+                projectlist.append(project)
+                st.session_state["projectlist"] = projectlist
+                st.session_state["currproject"] = project["name"]
+
+                # Clear retained dir if it was used
+                if mode == "from_retained":
+                    shutil.rmtree(st.session_state["retained_json_dir"], ignore_errors=True)
+                    st.session_state["retained_json_dir"] = None
+                
+                st.session_state["currproject"] = project["name"]
+                st.session_state["create_dashboard_from_retained"] = False  # reset flag
+                st.success(f"Dashboard **{project['name']}** created.")
+                st.rerun()
+
+    # -------------------- EXISTING BLANK CREATION (unchanged) --------------------
+    if mode == 1 or mode == "new_blank":
+        # (Keep your current, unmodified 'mode == 1' code block here)
+        # BEGIN: existing code
+        st.write("Fill in the new dashboard details. **'Home Page' view is always included.**")
+        st.caption("*Fields marked **(:red[*])** are required*")
+        with st.form("new_proj_form"):
+            name = st.text_input("Project (Dashboard) Name **:red[*]**", key="project_name")
+            description = st.text_area("Project Description", key="project_description")
+            views = st.multiselect("Select additional views to include", VIEW_OPTIONS, key="project_views")
+
+            submitted = st.form_submit_button("Create Project")
+            if submitted:
+                # prevent duplicate display names (preserving your original logic)
+                projectlist = st.session_state.get('projectlist', [])
+                if any(p['name'].lower() == name.lower() for p in projectlist):
+                    st.error(f"A project called **{name}** already exists. Pick another name.")
+                    st.stop()
+
+                project_folder = os.path.join(REPORTS_ROOT, name.lower().replace(" ", "_"))
+                os.makedirs(project_folder, exist_ok=True)
+
+                projectlist.append({
+                    'id': len(projectlist)+1,
+                    'name': name,
+                    'description': description,
+                    'views': ["Home Page"] + views,
+                    'folder': project_folder
+                })
+                st.session_state['projectlist'] = projectlist
+                st.session_state["currproject"] = name
+                st.rerun()

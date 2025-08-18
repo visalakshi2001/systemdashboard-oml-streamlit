@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import streamlit as st
-from projectdetail import project_form, VIEW_OPTIONS, DATA_TIES, replace_data, error_inspector_form, build_oml_form
+from projectdetail import project_form, VIEW_OPTIONS, REPORTS_ROOT, DATA_TIES, replace_data, error_inspector_form, build_oml_form, new_project_from_json_form
 import homepage
 import architecture
 import requirements
@@ -19,10 +19,24 @@ def init_session():
     """Ensure all required session_state keys exist."""
 
     if 'projectlist' not in st.session_state:
-        st.session_state['projectlist'] = []
+        st.session_state['projectlist'] = [{'id': 1, 
+                                            'name': "System Dashboard", 
+                                            'description': "", 
+                                            'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
+                                            'folder': os.path.join(REPORTS_ROOT, "System Dashboard".lower().replace(" ", "_")),},
+                                            {'id': 2, 
+                                            'name': "Lego Rover Dashboard", 
+                                            'description': "", 
+                                            'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
+                                            'folder': os.path.join(REPORTS_ROOT, "Lego Rover Dashboard".lower().replace(" ", "_")),},]
     if 'currproject' not in st.session_state:
         st.session_state['currproject'] = None
-    
+
+    # NEW keys for upcoming flows (used later, harmless now)
+    st.session_state.setdefault("retained_json_dir", None)      # temp path (str or None)
+    st.session_state.setdefault("pending_dashboard_meta", None) # dict or None
+    st.session_state.setdefault("create_dashboard_from_retained", False) # bool, True if user clicked "Create Dashboard" in retained JSON flow
+
     if 'omluploaded' not in st.session_state:
         st.session_state.omluploaded = False
     if 'build_code' not in st.session_state:
@@ -46,35 +60,51 @@ def init_session():
 
 
 def panel():
+
+    projectlist = st.session_state.get("projectlist", [])
+
+    # --- Case A: No projects yet → show Welcome page with 2 CTAs and stop ---
+    if not projectlist:
+        st.title("Welcome 👋")
+        st.caption("Create your first dashboard from an OML build or from SPARQL JSON results.")
+
+        # Center the CTAs
+        left, mid, right = st.columns([1, 2, 1])
+        with mid:
+            c1, c2 = st.columns(2)
+            with c1:
+                if st.button("New project using OML file", icon="🟪", use_container_width=True):
+                    build_oml_form()  # defined in projectdetail.py
+            with c2:
+                if st.button("New project using resultant JSON files", icon="🔣", use_container_width=True):
+                    new_project_from_json_form()
+                    # st.info("The JSON-based creation flow will be implemented in the next step.")
+                    # (We intentionally do not implement it here—per your request for steps 1–3 only.)
+        
+        # Prevent the rest of the app (e.g., main()) from rendering when no projects exist
+        st.stop()
+
+    # --- Case B: Projects exist → build Sidebar with selector + 2 creation buttons ---
     with st.sidebar:
-        st.subheader("Select Project")
-        projectlist = st.session_state['projectlist']
-        currproject = st.session_state['currproject']
+        st.header("Dashboards")
 
-        if projectlist != []:
-            projectnames = [p['name'] for p in projectlist]
-            currproject = st.radio("Select Current Project", options=projectnames)
-            st.session_state['currproject'] = currproject
-        else:
-            st.write("Create new dashboard using 'New Project'")
+        projectnames = [p['name'] for p in projectlist]
+        currproject = st.radio("Select Current Project", options=projectnames)
+        st.session_state['currproject'] = currproject
 
-
-        st.subheader("Preferences")
-        newproject = st.button("New Project", )
-        changeproject = st.button("Edit Project")
-
-        if newproject:
-            project_form(mode=1)
-        if changeproject:
+        st.divider()
+        # Replace the single "New Project" button with the two buttons below
+        st.caption(":red[Dashboard] Preferences")
+        if st.button("New project using OML file", icon="➕", use_container_width=True):
+            build_oml_form()
+        if st.button("New project using resultant JSON files", icon="➕", use_container_width=True):
+            new_project_from_json_form()
+            # st.info("The JSON-based creation flow will be implemented in the next step.")
+        if st.button("Edit config of current selected project", icon="➰", use_container_width=True):
             project_form(mode=2)
         
-        # --------------- create a gap using container ------------
-        st.container(height=65, border=False)
-        st.subheader("Have an OML file to build?")
-        st.caption("Upload your *.oml* file to build it remotely with Gradle")
-        if st.button("Generate Data with OML", icon="🟪"):
-            build_oml_form()
-
+        st.divider()
+        
         st.subheader("Having problems with OML description?")
         st.caption("Upload your *reasoning.xml* file to easily breakdown your error")
         if st.button("Inspect Error", icon="🔍"):
@@ -145,6 +175,10 @@ def main():
             for i, tab in enumerate(VIEWTABS):
                 with tab:
                     show_tab(project["views"][i], project)
+    
+    if st.session_state["create_dashboard_from_retained"]:
+        # If the user clicked "Create Dashboard" in retained JSON flow, show the dashboard creation form
+        project_form(mode="from_retained")
 
 
 
