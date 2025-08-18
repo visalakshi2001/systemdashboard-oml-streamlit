@@ -13,7 +13,6 @@ from utilities import (
     session_tmp_dir,
     discover_json_basenames,
     suggest_tabs_from_json,
-    materialize_dashboard,
 )
 
 
@@ -460,10 +459,11 @@ def new_project_from_json_form():
 
 
 @st.dialog("Project Details")
-def project_form(mode=1, *, json_dir: str | None = None):
+def project_form(mode, *, json_dir: str | None = None):
     """
     Modes:
       1 or "new_blank"   -> existing new dashboard form (no JSON processing)
+      "crud_dashboard"   -> Edit the Name/Desc/Views of Dashboard or delete dashboard
       "from_retained"    -> read JSONs from st.session_state.retained_json_dir
       "from_uploads"     -> read JSONs from 'json_dir' (staged upload dir)
     """
@@ -509,19 +509,41 @@ def project_form(mode=1, *, json_dir: str | None = None):
 
             submitted = st.form_submit_button("Create Project", disabled=disabled)
             if submitted:
-                if name.strip() == "":
-                    st.error("Name cannot be empty.")
+                if name == "":
+                    st.write("❗ :red[Name cannot be empty]")
+                    st.stop()
+                
+                # 🚫 Duplicate‑name guard (exclude the record being edited)
+                if any(p["name"].lower() == name.lower() for p in st.session_state['projectlist']):
+                    st.error(f"A project called **{name}** already exists. Pick another name.")
                     st.stop()
 
-                # Materialize once (no duplication)
-                project, target_path, final_name = materialize_dashboard(
-                    name=name.strip(),
-                    description=description.strip(),
-                    tabs=views,
-                    json_src_dir=src_dir,
-                    DATA_TIES=DATA_TIES,
-                    reports_root=REPORTS_ROOT,
-                )
+                # Create the project folder
+                project_folder = Path(os.path.join(REPORTS_ROOT, name.lower().replace(" ", "_")))
+                os.makedirs(project_folder, exist_ok=True)
+
+                copied = []
+                for jsonfile in Path(src_dir).rglob("*.json"):
+                    dest = project_folder / jsonfile.name
+                    shutil.copy2(jsonfile, dest)
+                    copied.append(dest)
+
+                # 3) Convert each JSON -> CSV beside it
+                for dest in copied:
+                    csv_out = dest.with_suffix(".csv")
+                    try:
+                        json_to_csv(csv_output_path=str(csv_out), json_input_path=str(dest))
+                    except Exception as e:
+                        # Do not fail the whole materialization if one file is bad
+                        print(f"CSV Conversion Error: Failed to convert {dest.name}: {e}")
+
+                project = {
+                    "id": None,  # filled by caller to keep existing numbering logic, if needed
+                    "name": name.strip(),
+                    "description": description,
+                    "views": ["Home Page"] + list(views),
+                    "folder": str(project_folder),
+                }
 
                 # Attach an id consistent with existing behavior
                 projectlist = st.session_state.get("projectlist", [])
@@ -535,11 +557,100 @@ def project_form(mode=1, *, json_dir: str | None = None):
                     shutil.rmtree(st.session_state["retained_json_dir"], ignore_errors=True)
                     st.session_state["retained_json_dir"] = None
                 
-                st.session_state["currproject"] = project["name"]
                 st.session_state["create_dashboard_from_retained"] = False  # reset flag
-                st.success(f"Dashboard **{project['name']}** created.")
+                st.toast(f"Dashboard **{project['name']}** created.")
                 st.rerun()
 
+    if mode == "crud_dashboard":
+        st.markdown("""
+            <style>
+            .stForm:has(span.edit_proj_form) .stFormSubmitButton button {
+                border: 1px solid rgba(255, 43, 43, 0.5);
+            }
+            .stForm:has(span.edit_proj_form) .stFormSubmitButton button:hover {
+                border: none;
+                background-color: rgba(255, 43, 43, 0.7);
+                color: #fff
+            }
+            </style>
+        """, unsafe_allow_html=True)
+        currproject = st.session_state['currproject']
+        projectlist = st.session_state['projectlist']
+        details = [p for p in projectlist if p['name'] == currproject][0]
+        index = projectlist.index(details)
+
+        # Remove "Home Page" from the options to avoid mutation of default tab
+        current_views = [v for v in details["views"] if v != "Home Page"]
+
+        st.write("Edit project details")
+
+        with st.form("edit_proj_form"):
+            st.markdown("<span class='edit_proj_form'></span>", unsafe_allow_html=True)
+            name = st.text_input("Project Name", value=details['name'], key="edit_project_name")
+            description = st.text_area("Description", value=details['description'], key="edit_project_description")
+            views = st.multiselect(
+                "Select Views", 
+                options=VIEW_OPTIONS,
+                default=current_views,
+                key="edit_project_views")
+
+            submitted = st.form_submit_button("Save Project", icon="✅", use_container_width=True)
+            if submitted:
+                if name == "":
+                    st.write("❗ :red[Name cannot be empty]")
+                    st.stop()
+                
+                # 🚫 Duplicate‑name guard (exclude the record being edited)
+                if any(
+                    (i != index) and (p["name"].lower() == name.lower())
+                    for i, p in enumerate(projectlist)
+                ):
+                    st.error(f"Another project is already named **{name}**.")
+                    st.stop()
+                
+                old_folder = details["folder"]
+                new_folder = os.path.join(REPORTS_ROOT, name.lower().replace(" ", "_"))
+
+                if old_folder != new_folder:
+                    shutil.move(old_folder, new_folder)            # rename directory
+
+                projectlist[index] = {
+                    'id': details['id'], 
+                    'name': name, 
+                    'description': description, 
+                    'views': ["Home Page"] + views, 
+                    'folder': new_folder,
+                }
+                st.session_state['projectlist'] = projectlist
+                st.session_state["currproject"] = name
+
+                # Rerun to display the new dashboard immediately
+                st.rerun()
+        
+        with st.expander(":red[Delete this Project?]", icon="🗑️"):
+            with st.form("delete_proj_form"):
+                retype_proj_name = st.text_input(f"Type the project name **{details['name']}** to confirm deletion")
+                if st.form_submit_button("Delete Project", type='primary'):
+                    if not retype_proj_name:
+                        st.error("Please type the project name to confirm deletion.")
+                        st.stop()
+                    if retype_proj_name == details['name']:
+                        shutil.rmtree(details['folder'], ignore_errors=True)  # delete project folder
+                        
+                        # Remove the project from the list
+                        projectlist.pop(index)
+                        # Rearrange index of remaining projects
+                        [proj.update({'id': i+1}) for i, proj in enumerate(projectlist)]
+                        st.session_state['projectlist'] = projectlist
+                        # first prokect in the list or None if empty
+                        st.session_state["currproject"] = projectlist[0]['name'] if projectlist != [] else None
+                        st.toast(f"Project **{details['name']}** deleted.")
+                        st.rerun()
+                    elif retype_proj_name != details['name']:
+                        st.error(f"Project name does not match.") 
+                    
+
+    
     # -------------------- EXISTING BLANK CREATION (unchanged) --------------------
     if mode == 1 or mode == "new_blank":
         # (Keep your current, unmodified 'mode == 1' code block here)

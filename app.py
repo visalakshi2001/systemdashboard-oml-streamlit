@@ -20,16 +20,16 @@ def init_session():
 
     if 'projectlist' not in st.session_state:
         st.session_state['projectlist'] = [
-                                            # {'id': 1, 
-                                            # 'name': "System Dashboard", 
-                                            # 'description': "", 
-                                            # 'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
-                                            # 'folder': os.path.join(REPORTS_ROOT, "System Dashboard".lower().replace(" ", "_")),},
-                                            # {'id': 2, 
-                                            # 'name': "Lego Rover Dashboard", 
-                                            # 'description': "", 
-                                            # 'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
-                                            # 'folder': os.path.join(REPORTS_ROOT, "Lego Rover Dashboard".lower().replace(" ", "_")),},
+                                            {'id': 1, 
+                                            'name': "System Dashboard", 
+                                            'description': "", 
+                                            'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
+                                            'folder': os.path.join(REPORTS_ROOT, "System Dashboard".lower().replace(" ", "_")),},
+                                            {'id': 2, 
+                                            'name': "Lego Rover Dashboard", 
+                                            'description': "", 
+                                            'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
+                                            'folder': os.path.join(REPORTS_ROOT, "Lego Rover Dashboard".lower().replace(" ", "_")),},
                                         ]
     if 'currproject' not in st.session_state:
         st.session_state['currproject'] = None
@@ -96,6 +96,7 @@ def panel():
         st.header("Dashboards")
 
         projectnames = [p['name'] for p in projectlist]
+        currindex = projectnames.index(st.session_state['currproject']) if st.session_state['currproject'] != None else 0
         currproject = st.radio("Select Current Project", options=projectnames)
         st.session_state['currproject'] = currproject
 
@@ -108,7 +109,7 @@ def panel():
             new_project_from_json_form()
             # st.info("The JSON-based creation flow will be implemented in the next step.")
         if st.button("Edit config of current selected project", icon="➰", use_container_width=True):
-            project_form(mode=2)
+            project_form(mode="crud_dashboard")
         
         st.divider()
         

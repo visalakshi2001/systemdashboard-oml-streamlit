@@ -206,74 +206,74 @@ def suggest_tabs_from_json(basenames: list[str], DATA_TIES: dict) -> list[str]:
     # Return in stable alpha order
     return sorted(suggestions)
 
-def _slugify_name(name: str) -> str:
-    # simple slug consistent with existing code: lower, spaces -> underscores
-    return name.lower().strip().replace(" ", "_")
+# def _slugify_name(name: str) -> str:
+#     # simple slug consistent with existing code: lower, spaces -> underscores
+#     return name.lower().strip().replace(" ", "_")
 
-def _unique_folder(base: Path) -> Path:
-    """
-    If 'base' exists, suffix with -2, -3, ... until unique.
-    """
-    if not base.exists():
-        return base
-    n = 2
-    while True:
-        cand = base.parent / f"{base.name}-{n}"
-        if not cand.exists():
-            return cand
-        n += 1
+# def _unique_folder(base: Path) -> Path:
+#     """
+#     If 'base' exists, suffix with -2, -3, ... until unique.
+#     """
+#     if not base.exists():
+#         return base
+#     n = 2
+#     while True:
+#         cand = base.parent / f"{base.name}-{n}"
+#         if not cand.exists():
+#             return cand
+#         n += 1
 
-def materialize_dashboard(
-    *,
-    name: str,
-    description: str,
-    tabs: list[str],
-    json_src_dir: Path,
-    DATA_TIES: dict,
-    reports_root: str | Path = "reports",
-):
-    """
-    Create dashboard folder under reports_root/name, copy JSONs from json_src_dir,
-    convert JSON->CSV for every JSON present, and return:
-      (project_dict, project_folder_path, final_display_name)
+# def materialize_dashboard(
+#     *,
+#     name: str,
+#     description: str,
+#     tabs: list[str],
+#     json_src_dir: Path,
+#     DATA_TIES: dict,
+#     reports_root: str | Path = "reports",
+# ):
+#     """
+#     Create dashboard folder under reports_root/name, copy JSONs from json_src_dir,
+#     convert JSON->CSV for every JSON present, and return:
+#       (project_dict, project_folder_path, final_display_name)
 
-    project_dict matches the shape used in projectdetail.project_form(mode=1).
-    """
-    from jsontocsv import json_to_csv  # local import to avoid circulars
+#     project_dict matches the shape used in projectdetail.project_form(mode=1).
+#     """
+#     from jsontocsv import json_to_csv  # local import to avoid circulars
 
-    # 1) Create project folder
-    reports_root = Path(reports_root)
-    reports_root.mkdir(exist_ok=True)
-    target = reports_root / _slugify_name(name)
-    target = _unique_folder(target)
-    target.mkdir(parents=True, exist_ok=True)
+#     # 1) Create project folder
+#     reports_root = Path(reports_root)
+#     reports_root.mkdir(exist_ok=True)
+#     target = reports_root / _slugify_name(name)
+#     target = _unique_folder(target)
+#     target.mkdir(parents=True, exist_ok=True)
 
-    # If final name changed due to uniqueness, reflect in display name
-    final_display_name = name if target.name == _slugify_name(name) else target.name.replace("_", " ").title()
+#     # If final name changed due to uniqueness, reflect in display name
+#     final_display_name = name if target.name == _slugify_name(name) else target.name.replace("_", " ").title()
 
-    # 2) Copy all JSONs (flat copy is sufficient; keep filenames)
-    src = Path(json_src_dir)
-    copied = []
-    for p in src.rglob("*.json"):
-        dest = target / p.name
-        shutil.copy2(p, dest)
-        copied.append(dest)
+#     # 2) Copy all JSONs (flat copy is sufficient; keep filenames)
+#     src = Path(json_src_dir)
+#     copied = []
+#     for p in src.rglob("*.json"):
+#         dest = target / p.name
+#         shutil.copy2(p, dest)
+#         copied.append(dest)
 
-    # 3) Convert each JSON -> CSV beside it
-    for dest in copied:
-        csv_out = dest.with_suffix(".csv")
-        try:
-            json_to_csv(csv_output_path=str(csv_out), json_input_path=str(dest))
-        except Exception as e:
-            # Do not fail the whole materialization if one file is bad
-            print(f"[materialize_dashboard] Failed to convert {dest.name}: {e}")
+#     # 3) Convert each JSON -> CSV beside it
+#     for dest in copied:
+#         csv_out = dest.with_suffix(".csv")
+#         try:
+#             json_to_csv(csv_output_path=str(csv_out), json_input_path=str(dest))
+#         except Exception as e:
+#             # Do not fail the whole materialization if one file is bad
+#             print(f"[materialize_dashboard] Failed to convert {dest.name}: {e}")
 
-    # 4) Build project dict (Home Page always included)
-    project = {
-        "id": None,  # filled by caller to keep existing numbering logic, if needed
-        "name": final_display_name,
-        "description": description,
-        "views": ["Home Page"] + list(tabs),
-        "folder": str(target),
-    }
-    return project, target, final_display_name
+#     # 4) Build project dict (Home Page always included)
+#     project = {
+#         "id": None,  # filled by caller to keep existing numbering logic, if needed
+#         "name": final_display_name,
+#         "description": description,
+#         "views": ["Home Page"] + list(tabs),
+#         "folder": str(target),
+#     }
+#     return project, target, final_display_name
