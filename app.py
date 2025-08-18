@@ -19,16 +19,18 @@ def init_session():
     """Ensure all required session_state keys exist."""
 
     if 'projectlist' not in st.session_state:
-        st.session_state['projectlist'] = [{'id': 1, 
-                                            'name': "System Dashboard", 
-                                            'description': "", 
-                                            'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
-                                            'folder': os.path.join(REPORTS_ROOT, "System Dashboard".lower().replace(" ", "_")),},
-                                            {'id': 2, 
-                                            'name': "Lego Rover Dashboard", 
-                                            'description': "", 
-                                            'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
-                                            'folder': os.path.join(REPORTS_ROOT, "Lego Rover Dashboard".lower().replace(" ", "_")),},]
+        st.session_state['projectlist'] = [
+                                            # {'id': 1, 
+                                            # 'name': "System Dashboard", 
+                                            # 'description': "", 
+                                            # 'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
+                                            # 'folder': os.path.join(REPORTS_ROOT, "System Dashboard".lower().replace(" ", "_")),},
+                                            # {'id': 2, 
+                                            # 'name': "Lego Rover Dashboard", 
+                                            # 'description': "", 
+                                            # 'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
+                                            # 'folder': os.path.join(REPORTS_ROOT, "Lego Rover Dashboard".lower().replace(" ", "_")),},
+                                        ]
     if 'currproject' not in st.session_state:
         st.session_state['currproject'] = None
 
@@ -57,6 +59,11 @@ def init_session():
         st.session_state['dir_tree'] = []
     if 'sparql_selected_nodes' not in st.session_state:
         st.session_state['sparql_selected_nodes'] = []
+
+def rerun_flag_check_function_calls():
+    if st.session_state["create_dashboard_from_retained"]:
+        # If the user clicked "Create Dashboard" in retained JSON flow, show the dashboard creation form
+        project_form(mode="from_retained")
 
 
 def panel():
@@ -175,16 +182,13 @@ def main():
             for i, tab in enumerate(VIEWTABS):
                 with tab:
                     show_tab(project["views"][i], project)
-    
-    if st.session_state["create_dashboard_from_retained"]:
-        # If the user clicked "Create Dashboard" in retained JSON flow, show the dashboard creation form
-        project_form(mode="from_retained")
 
 
 
 if __name__ == "__main__":
     _run_installation_if_streamlit_env()  # Ensure Java/Gradle are installed
     init_session()
+    rerun_flag_check_function_calls() 
     panel()
     main()
 
