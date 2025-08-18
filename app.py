@@ -20,16 +20,16 @@ def init_session():
 
     if 'projectlist' not in st.session_state:
         st.session_state['projectlist'] = [
-                                            {'id': 1, 
-                                            'name': "System Dashboard", 
-                                            'description': "", 
-                                            'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
-                                            'folder': os.path.join(REPORTS_ROOT, "System Dashboard".lower().replace(" ", "_")),},
-                                            {'id': 2, 
-                                            'name': "Lego Rover Dashboard", 
-                                            'description': "", 
-                                            'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
-                                            'folder': os.path.join(REPORTS_ROOT, "Lego Rover Dashboard".lower().replace(" ", "_")),},
+                                            # {'id': 1, 
+                                            # 'name': "System Dashboard", 
+                                            # 'description': "", 
+                                            # 'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
+                                            # 'folder': os.path.join(REPORTS_ROOT, "System Dashboard".lower().replace(" ", "_")),},
+                                            # {'id': 2, 
+                                            # 'name': "Lego Rover Dashboard", 
+                                            # 'description': "", 
+                                            # 'views': ["Home Page"] + [v for v in VIEW_OPTIONS if v != "Home Page"], 
+                                            # 'folder': os.path.join(REPORTS_ROOT, "Lego Rover Dashboard".lower().replace(" ", "_")),},
                                         ]
     if 'currproject' not in st.session_state:
         st.session_state['currproject'] = None
