@@ -176,7 +176,7 @@ def session_tmp_dir(kind: str) -> Path:
     Returns a Path to the created directory.
     """
     base = Path(REPORTS_ROOT) / Path(".tmp")
-    base.mkdir(exist_ok=True)
+    base.mkdir(parents=True, exist_ok=True)
     d = base / f"{kind}_{uuid.uuid4().hex[:8]}"
     d.mkdir(parents=True, exist_ok=True)
     return d
