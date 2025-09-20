@@ -1,0 +1,18 @@
+PREFIX xsd:  	<http://www.w3.org/2001/XMLSchema#>
+PREFIX sce:		<http://uaontologies.com/Scenarios/Scenarios#>
+
+SELECT 
+  ?reqName
+  (GROUP_CONCAT(DISTINCT ?ScenarioID; SEPARATOR=",") AS ?scenarios) 
+  ?quaID
+
+WHERE {
+  ?req a sce:Requirement .
+  ?req sce:prescribes ?qua .
+  ?qua sce:hasName ?quaID .
+  ?req sce:hasName ?reqName .
+  ?req sce:hasTestScenario ?testScenario .
+  ?testScenario sce:hasName ?ScenarioID .
+}
+GROUP BY ?reqName ?quaID
+ORDER BY xsd:integer(REPLACE(STR(?reqName), "[^0-9]", ""))

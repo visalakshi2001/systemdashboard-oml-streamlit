@@ -1,0 +1,13 @@
+PREFIX xsd:  	<http://www.w3.org/2001/XMLSchema#>
+PREFIX sce:		<http://uaontologies.com/Scenarios/Scenarios#>
+
+
+SELECT ?quantityID ?cost
+
+WHERE {
+	?quantity a sce:Quantity .
+	?quantity sce:hasObservationCost ?cost .
+	?quantity sce:hasName ?quantityID .
+}
+ORDER BY
+  ASC(xsd:integer(REPLACE(STRAFTER(STR(?quantity), "#"), "[^0-9]", "")))

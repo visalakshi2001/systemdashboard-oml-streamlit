@@ -1,0 +1,14 @@
+PREFIX xsd:  	<http://www.w3.org/2001/XMLSchema#>
+PREFIX sce:		<http://uaontologies.com/Scenarios/Scenarios#>
+
+
+SELECT ?scenarioID ?cost
+
+WHERE {
+	?scenario a sce:Scenario .
+	?scenario sce:hasCost ?cost .
+	?scenario sce:hasName ?scenarioID .
+}
+ORDER BY
+  ASC(STRSTARTS(STRAFTER(STR(?scenario), "#"), "s"))  # false (p) = 0, true (s) = 1
+  ASC(xsd:integer(REPLACE(STRAFTER(STR(?scenario), "#"), "[^0-9]", "")))
