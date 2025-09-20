@@ -167,8 +167,8 @@ def _run_installation_if_streamlit_env():
 
 
 
-from pathlib import Path
-import uuid, shutil, os
+import uuid
+import json
 
 def session_tmp_dir(kind: str) -> Path:
     """
@@ -205,6 +205,89 @@ def suggest_tabs_from_json(basenames: list[str], DATA_TIES: dict) -> list[str]:
             suggestions.append(tab)
     # Return in stable alpha order
     return sorted(suggestions)
+
+
+def discover_populated_json_basenames(src):
+    """
+    Walk `src` recursively, open each *.json, and return a set of basenames
+    (file stem, no extension) for JSON files that appear *populated*.
+
+    Heuristic used: JSON has a top-level "results" -> "bindings" list with len > 0.
+    This matches the SPARQL JSON shape you showed:
+
+      { "head": { ... }, "results": { "bindings": [ ... ] } }
+
+    Files that fail to parse are skipped.
+    """
+    src = Path(src)
+    present = set()
+    for p in src.rglob("*.json"):
+        try:
+            raw = p.read_text(encoding="utf-8")
+            j = json.loads(raw)
+        except Exception:
+            # skip unreadable/bad json
+            continue
+
+        # Common SPARQL JSON shape: results.bindings -> list
+        bindings = j.get("results", {}).get("bindings", None)
+        if isinstance(bindings, list) and len(bindings) > 0:
+            present.add(p.stem)
+            continue
+
+        # Some queries might return boolean or other output; treat truthy values as populated
+        # e.g. {"boolean": true}
+        if j.get("boolean") is True:
+            present.add(p.stem)
+            continue
+
+        # (If you have other shapes to consider, we can add them here.)
+    print("present base names with length > 0:", present)
+    return present
+
+
+def match_profile_from_basenames(present_basenames,profiles):
+    """
+    Given a set of present JSON basenames and a profiles dict of the form:
+      { profile_name: {"data": [...], "views": [...], "module_prefix": "..."} }
+
+    Return a list of tuples:
+      (profile_name, coverage_fraction, present_count, total_required)
+
+    Sorted in descending order by coverage_fraction, then by present_count.
+    Coverage fraction = present_count / total_required (0..1).
+    """
+    scored = []
+    for name, info in profiles.items():
+        required = set(info.get("data", []))
+        total = max(1, len(required))
+        present_count = len(required & set(present_basenames))
+        coverage = present_count / total
+        scored.append((name, coverage, present_count, total))
+    # sort: highest coverage first, then most present files
+    scored.sort(key=lambda x: (x[1], x[2]), reverse=True)
+    print("profile coverage scores:", scored)
+    return scored
+
+
+def view_name_to_module_name(view_name):
+    """
+    Convert a human view name to a compact module identifier suitable for imports.
+
+    Examples:
+      "Test Strategy" -> "teststrategy"
+      "Requirements / Sys" -> "requirementssys"
+    (Removes non-alnum characters and lowercases.)
+    """
+    # remove non-alphanumeric, convert spaces to nothing, lowercase
+    s = view_name.lower().replace(" ", "")
+    # drop any remaining non-alphanumeric/underscore characters
+    s = re.sub(r"[^0-9a-z_]", "", s)
+    # ensure it doesn't start with digit (module names shouldn't)
+    if re.match(r"^\d", s):
+        s = "_" + s
+    return s
+# --------------------------------------------------------------------------- #
 
 # def _slugify_name(name: str) -> str:
 #     # simple slug consistent with existing code: lower, spaces -> underscores

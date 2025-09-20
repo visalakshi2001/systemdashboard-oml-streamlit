@@ -6,3 +6,4 @@ graphviz==0.20.3
 supabase
 num2words
 streamlit-tree-select
+networkx

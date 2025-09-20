@@ -7,3 +7,4 @@ omltemplateproject/.fuseki
 omltemplateproject/.gradle
 omltemplateproject/build
 
+.streamlit/

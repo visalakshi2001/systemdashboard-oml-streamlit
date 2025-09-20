@@ -58,6 +58,7 @@ dependencies {
     oml "io.github.visalakshi2001:UA_Core:+"
     oml "io.github.visalakshi2001:UA_Domain:+"
     oml "io.github.visalakshi2001:UA_Libraries:+"
+    oml "io.github.visalakshi2001:Scenarios:+"
 }
 
 /*
