@@ -6,6 +6,13 @@ import os, tarfile, shutil, urllib.request, subprocess
 import streamlit as st
 import re
 
+import logging
+# Basic configuration for logging to the console
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Get a logger instance
+logger = logging.getLogger()
+
 REPORTS_ROOT = "reports"
 
 def _fetch_file_bytes(base_dir: Path, rel_path: str) -> bytes | None:
@@ -243,6 +250,7 @@ def discover_populated_json_basenames(src):
 
         # (If you have other shapes to consider, we can add them here.)
     print("present base names with length > 0:", present)
+    logger.debug(f"{src}present base names with length > 0:{present}")
     return present
 
 
@@ -267,6 +275,7 @@ def match_profile_from_basenames(present_basenames,profiles):
     # sort: highest coverage first, then most present files
     scored.sort(key=lambda x: (x[1], x[2]), reverse=True)
     print("profile coverage scores:", scored)
+    logger.debug(f"profile coverage scores: {scored}")
     return scored
 
 

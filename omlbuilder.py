@@ -3,7 +3,7 @@ import shutil
 import re
 import subprocess
 from pathlib import Path
-
+from utilities import logger
 
 # Path to your project root (adjust if app.py lives elsewhere)
 PROJECT_ROOT = Path(__file__).parent.resolve() / "omltemplateproject"
@@ -54,6 +54,7 @@ def buildoml(omlfile):
     
     cmd = [wrapper, "clean", "downloadDependencies", "build"]
     print(f"Running command: {' '.join(cmd)}")
+    logger.infor(f"Running command: {' '.join(cmd)}")
     proc = subprocess.run(
         cmd,
         cwd=PROJECT_ROOT,
@@ -97,6 +98,7 @@ def sparql_query():
 
     for subcmd in cmds:
         print(f"Running command: {wrapper} {subcmd}")
+        logger.info(f"Running command: {wrapper} {subcmd}")
         proc = subprocess.run(
             [wrapper, subcmd],
             cwd=PROJECT_ROOT,
@@ -119,6 +121,7 @@ def sparql_query():
     else:
         files = []
     print("files", files)
+    logger.debug(f"files {files}")
     # 7. Return JSON with status, code, and browse URL
     return {
         "exit_code": proc.returncode,
