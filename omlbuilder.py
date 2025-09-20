@@ -54,7 +54,7 @@ def buildoml(omlfile):
     
     cmd = [wrapper, "clean", "downloadDependencies", "build"]
     print(f"Running command: {' '.join(cmd)}")
-    logger.infor(f"Running command: {' '.join(cmd)}")
+    logger.info(f"Running command: {' '.join(cmd)}")
     proc = subprocess.run(
         cmd,
         cwd=PROJECT_ROOT,
