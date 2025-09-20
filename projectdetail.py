@@ -16,7 +16,8 @@ from utilities import (
     discover_populated_json_basenames,
     match_profile_from_basenames,
     view_name_to_module_name,
-    logger
+    logger,
+    consolidate_result_aliases
 )
 
 
@@ -610,6 +611,16 @@ def build_oml_form():
                             tmp = session_tmp_dir("sparql")
                             for p in json_files:
                                 shutil.copy2(p, tmp / p.name)
+                            
+                            # ↓↓↓ ADD THIS BLOCK ↓↓↓
+                            try:
+                                # chosen_profile is not yet known here, so pass None.
+                                # This will prefer the largest populated alias when both exist.
+                                consolidate_result_aliases(tmp, chosen_profile=None)
+                            except Exception as e:
+                                logger.info(f"[build_oml_form] consolidate_result_aliases skipped: {e}")
+                            # ↑↑↑ ADD THIS BLOCK ↑↑↑
+
                             # detect which JSONs are populated and match to profiles
                             present_basenames = discover_populated_json_basenames(tmp)
                             # store present files for UI & debugging
@@ -724,6 +735,13 @@ def new_project_from_json_form():
         for uf in uploaded:
             # Write each uploaded file into the temp dir as-is
             (tmp / uf.name).write_bytes(uf.read())
+        
+        # ↓↓↓ ADD THIS BLOCK ↓↓↓
+        try:
+            consolidate_result_aliases(tmp, chosen_profile=None)
+        except Exception as e:
+            logger.info(f"[new_project_from_json_form] consolidate_result_aliases skipped: {e}")
+        # ↑↑↑ ADD THIS BLOCK ↑↑↑
         
         # detect which JSONs are populated and match to profiles
         present_basenames = discover_populated_json_basenames(tmp)

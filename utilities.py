@@ -298,6 +298,209 @@ def view_name_to_module_name(view_name):
     return s
 # --------------------------------------------------------------------------- #
 
+from typing import Optional
+import json
+import logging
+from pathlib import Path
+
+def consolidate_result_aliases(
+    tmp_dir,
+    *,
+    chosen_profile = None,
+    aliases_map = None,
+    # logger = None,
+):
+    """
+    Consolidate result JSON files that are produced under alias names into a single
+    canonical filename expected by DATA_TIES (e.g., Requirements_main.json /
+    Requirements_testopt.json -> Requirements.json).
+
+    This should be called *after* results are copied/written to a temp folder and
+    *before* profile coverage checks / CSV conversion.
+
+    Args:
+        tmp_dir: Directory containing JSON results to consolidate.
+        chosen_profile: If already known, influences tie-breaking when multiple aliases
+            are populated. Example policy (built-in below):
+              - If profile looks like "Test Optimization", prefer *_testopt
+              - Otherwise prefer *_main
+            If not provided, falls back to "largest file size" heuristic.
+        aliases_map: Optional mapping of canonical basename -> list of alias basenames.
+            Defaults to just "Requirements": ["Requirements_main", "Requirements_testopt"].
+            You can extend this later without touching callers.
+        logger: Optional logger; if None, uses root logger.
+
+    Returns:
+        A summary dict for logging/inspection, e.g.:
+        {
+          "Requirements": {
+             "kept": "Requirements_main",
+             "action": "renamed",       # or "kept" if already canonical
+             "removed": ["Requirements_testopt"],
+             "reason": "single populated alias",
+          }
+        }
+    """
+    # if logger is None:
+    #     import logging as _logging
+    #     logger = _logging.getLogger(__name__)
+
+    tmp_dir = Path(tmp_dir)
+    tmp_dir.mkdir(parents=True, exist_ok=True)
+
+    # Default alias map — extend later if you add more alias groups
+    if aliases_map is None:
+        aliases_map = {
+            "Requirements": ["Requirements_main", "Requirements_testopt"],
+        }
+
+    # Discover which basenames are actually populated (SPARQL JSON with non-empty results)
+    try:
+        populated = set(discover_populated_json_basenames(tmp_dir))
+    except Exception as e:
+        logger.info("[consolidate_result_aliases] Failed to scan population: %s", e)
+        populated = set()
+
+    def _file_size(p: Path) -> int:
+        try:
+            return p.stat().st_size
+        except Exception:
+            return -1
+
+    def _prefer_by_profile(canonical: str, candidates: list[str]) -> Optional[str]:
+        """
+        If we know the chosen profile, prefer the alias that matches the intent.
+        Very lightweight policy:
+          - For something like "Test Optimization", prefer '*_testopt'
+          - Otherwise prefer '*_main'
+        Returns alias stem or None if no profile-based preference applied.
+        """
+        if not chosen_profile:
+            return None
+        prof = chosen_profile.strip().lower()
+        if "test" in prof and "opt" in prof:
+            # prefer *_testopt if present
+            for a in candidates:
+                if a.endswith("_testopt"):
+                    return a
+        # otherwise prefer *_main if present
+        for a in candidates:
+            if a.endswith("_main"):
+                return a
+        return None
+
+    summary: dict[str, dict] = {}
+
+    for canonical, alias_list in aliases_map.items():
+        # Gather present files among aliases (and include canonical if it already exists)
+        present_alias_paths = []
+        for stem in alias_list:
+            p = tmp_dir / f"{stem}.json"
+            if p.exists():
+                present_alias_paths.append(p)
+
+        canonical_path = tmp_dir / f"{canonical}.json"
+        if canonical_path.exists():
+            # Treat a pre-existing canonical as another candidate (useful for uploads)
+            present_alias_paths.append(canonical_path)
+
+        if not present_alias_paths:
+            # Nothing to do for this canonical
+            continue
+
+        # Split candidates into populated vs empty using the "populated" set
+        populated_aliases = []
+        empty_aliases = []
+        for p in present_alias_paths:
+            stem = p.stem
+            if stem in populated:
+                populated_aliases.append(p)
+            else:
+                empty_aliases.append(p)
+
+        # Decision matrix
+        chosen_path: Optional[Path] = None
+        reason = ""
+
+        if len(populated_aliases) == 1:
+            chosen_path = populated_aliases[0]
+            reason = "single populated alias"
+        elif len(populated_aliases) > 1:
+            # Try profile-based preference first
+            profile_choice = _prefer_by_profile(canonical, [p.stem for p in populated_aliases])
+            if profile_choice:
+                chosen_path = next(p for p in populated_aliases if p.stem == profile_choice)
+                reason = f"profile preferred: {profile_choice}"
+            else:
+                # Fall back to largest file size
+                chosen_path = max(populated_aliases, key=_file_size)
+                reason = "multiple populated aliases; chose largest file"
+        else:
+            # No populated alias found
+            # If canonical exists and is populated (edge case already handled above),
+            # we wouldn't be here. So everything is empty → remove all variants.
+            for p in present_alias_paths:
+                try:
+                    p.unlink()
+                except Exception:
+                    pass
+            summary[canonical] = {
+                "kept": None,
+                "action": "removed-all-empty",
+                "removed": [p.stem for p in present_alias_paths],
+                "reason": "all aliases empty",
+            }
+            logger.info("[consolidate_result_aliases] %s: removed all empty variants: %s",
+                        canonical, [p.name for p in present_alias_paths])
+            continue
+
+        removed: list[str] = []
+
+        # Ensure canonical filename is the final artifact
+        if chosen_path.stem != canonical:
+            # Replace canonical if it exists
+            if canonical_path.exists():
+                try:
+                    canonical_path.unlink()
+                except Exception:
+                    pass
+            try:
+                chosen_path.replace(canonical_path)
+                action = "renamed"
+            except Exception:
+                # As a fallback, copy then remove source
+                try:
+                    canonical_path.write_bytes(chosen_path.read_bytes())
+                    chosen_path.unlink(missing_ok=True)
+                    action = "copied-then-removed"
+                except Exception as e:
+                    logger.info("[consolidate_result_aliases] %s: failed to move %s -> %s: %s",
+                                 canonical, chosen_path.name, canonical_path.name, e)
+                    action = "failed-move"
+        else:
+            action = "kept"
+
+        # Remove any *other* alias files (including previous canonical duplicates)
+        for p in present_alias_paths:
+            if p.exists() and p != canonical_path:
+                try:
+                    p.unlink()
+                    removed.append(p.stem)
+                except Exception:
+                    pass
+
+        summary[canonical] = {
+            "kept": canonical,
+            "action": action,
+            "removed": removed,
+            "reason": reason,
+        }
+        logger.info("[consolidate_result_aliases] %s → %s (%s); removed: %s",
+                    canonical, canonical_path.name, reason, removed)
+
+    return summary
+
+
 # def _slugify_name(name: str) -> str:
 #     # simple slug consistent with existing code: lower, spaces -> underscores
 #     return name.lower().strip().replace(" ", "_")
