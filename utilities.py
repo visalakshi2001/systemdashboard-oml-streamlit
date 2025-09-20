@@ -8,7 +8,7 @@ import re
 
 import logging
 # Basic configuration for logging to the console
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Get a logger instance
 logger = logging.getLogger()
