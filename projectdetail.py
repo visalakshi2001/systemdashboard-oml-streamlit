@@ -208,7 +208,7 @@ def project_form(mode, *, json_dir: str | None = None):
                     except Exception as e:
                         # Do not fail the whole materialization if one file is bad
                         print(f"CSV Conversion Error: Failed to convert {dest.name}: {e}")
-                        logger.error(f"CSV Conversion Error: Failed to convert {dest.name}: {e}")
+                        logger.info(f"CSV Conversion Error: Failed to convert {dest.name}: {e}")
                 # project = {
                 #     "id": None,  # filled by caller to keep existing numbering logic, if needed
                 #     "name": name.strip(),
@@ -645,7 +645,7 @@ def build_oml_form():
                             st.session_state['create_dashboard_from_retained'] = True
                             st.session_state["create_dashboard_from_uploads"] = False
                             print(allowed_views, suggested_views, chosen_profile, str(tmp))
-                            logger.debug(f"{allowed_views, suggested_views, chosen_profile, str(tmp)}")
+                            logger.info(f"{allowed_views, suggested_views, chosen_profile, str(tmp)}")
                             st.rerun() # rerun to close current dialog and open the project creation form
                     else:
                         st.info("No JSON results were generated. Upload or add SPARQL queries and re-run.")

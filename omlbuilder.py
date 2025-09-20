@@ -121,7 +121,7 @@ def sparql_query():
     else:
         files = []
     print("files", files)
-    logger.debug(f"files {files}")
+    logger.info(f"files {files}")
     # 7. Return JSON with status, code, and browse URL
     return {
         "exit_code": proc.returncode,
