@@ -174,19 +174,18 @@ def render(project: dict) -> None:
                 horizontal=True,
                 format_func=lambda x: {"alpha": "Alpha-numeric", "cost": "Cost (low → high)"}[x]
             )
-            order_by = "alpha" if order_choice.startswith("Alpha") else "cost"
             ascending = True  # lowest cost at top; flip to False if you want highest first
             scenario_costs = costs_data["scenarios"]
         fig1 = plot_sequence_dots(unopt_tests["tests"], "Unoptimized Test Sequence", 
                                   cell_size=cell_size, fig_height=fig_height, 
-                                    order_by=order_by,
+                                    order_by=order_choice,
                                     scenario_costs=scenario_costs,
                                     ascending=ascending,)
         st.plotly_chart(fig1, use_container_width=True)
         if show_optimized:
             fig2 = plot_sequence_dots(opt_tests["tests"], "Optimized Test Sequence", 
                                       cell_size=cell_size, fig_height=fig_height,
-                                        order_by=order_by,
+                                        order_by=order_choice,
                                         scenario_costs=scenario_costs,
                                         ascending=ascending,)
             st.plotly_chart(fig2, use_container_width=True)
@@ -202,12 +201,27 @@ def render(project: dict) -> None:
                 min_value=400, max_value=1200, value=500, step=50,
                 key="fig_height_slider"
             )
+            order_choice = st.radio(
+                "Order scenarios by",
+                ["alpha", "cost"],
+                index=1,
+                horizontal=True,
+                format_func=lambda x: {"alpha": "Alpha-numeric", "cost": "Cost (low → high)"}[x]
+            )
+            ascending = True  # lowest cost at top; flip to False if you want highest first
+            scenario_costs = costs_data["scenarios"]
         fig1 = build_scenario_timeline(unopt_tests["tests"], "Unoptimized Scenario Timeline", 
-                                       cell_size=cell_size, fig_height=fig_height)
+                                       cell_size=cell_size, fig_height=fig_height,
+                                        order_by=order_choice,
+                                        scenario_costs=scenario_costs,
+                                        ascending=ascending,)
         st.plotly_chart(fig1, use_container_width=True)
         if show_optimized:
             fig2 = build_scenario_timeline(opt_tests["tests"], "Optimized Scenario Timeline", 
-                                           cell_size=cell_size, fig_height=fig_height)
+                                           cell_size=cell_size, fig_height=fig_height,
+                                           order_by=order_choice,
+                                            scenario_costs=scenario_costs,
+                                            ascending=ascending,)
             st.plotly_chart(fig2, use_container_width=True)
     elif plot_option == "Presence Matrix":
         cols = st.columns(2)

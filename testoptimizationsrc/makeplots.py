@@ -181,9 +181,9 @@ def plot_sequence_dots(
     cell_size = 10,
     fig_height = 600,
     *,
-    order_by = "alpha",          # Step 1: ordering knob
-    scenario_costs = None,     # Step 1: costs map
-    ascending = True                                  # Step 1: direction
+    order_by = "alpha",         # Step 1: ordering knob
+    scenario_costs = None,      # Step 1: costs map
+    ascending = True            # Step 1: direction
 ):
     """
     Scatter of scenarios (y) vs test execution order (x).
@@ -256,7 +256,16 @@ def plot_sequence_dots(
     return fig
 
 
-def build_scenario_timeline(tests, title, cell_size=10, fig_height=600):
+def build_scenario_timeline(
+    tests, 
+    title, 
+    cell_size=10, 
+    fig_height=600,
+    *,
+    order_by = "alpha",         # Step 1: ordering knob
+    scenario_costs = None,      # Step 1: costs map
+    ascending = True            # Step 1: direction
+):
     """
     Build a Plotly timeline (Gantt) figure that shows how long each scenario
     remains active across a test sequence.
@@ -299,6 +308,13 @@ def build_scenario_timeline(tests, title, cell_size=10, fig_height=600):
     # ------------------------------------------------------------------
     # 3. Build the figure  ---------------------------------------------
     # ------------------------------------------------------------------
+    # ---- compute y order (Step 3) ----
+    y_cat = _order_scenarios(
+        ys,
+        order_by=order_by,
+        scenario_costs=scenario_costs,
+        ascending=ascending,
+    )
     fig = go.Figure(
         go.Scatter(
             x=xs,
@@ -331,7 +347,9 @@ def build_scenario_timeline(tests, title, cell_size=10, fig_height=600):
             type="category",
             categoryorder="array",
             # reverse so the numerically first scenario appears at the top
-            categoryarray=ordered_scenario_ids[::-1],
+            # categoryarray=ordered_scenario_ids[::-1],
+            categoryarray=y_cat,               # <- ordered by cost or alpha
+            autorange="reversed",              # lowest-cost (first) at TOP
             showgrid=True,
             dtick=1,
             tick0=0,
