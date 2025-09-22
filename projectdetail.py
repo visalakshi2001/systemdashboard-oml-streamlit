@@ -124,7 +124,7 @@ def project_form(mode, *, json_dir: str | None = None):
         if mode == "from_retained":
             src_dir = st.session_state.get("retained_json_dir")
             if not src_dir:
-                st.error("No retained SPARQL results found in this session.")
+                st.error("No retained files found in this session.")
                 st.stop()
             src_dir = Path(src_dir)
         elif mode == "from_uploads":
@@ -148,7 +148,7 @@ def project_form(mode, *, json_dir: str | None = None):
                 effective_ties[k] = list(v)
         suggested = suggest_tabs_from_json(basenames, effective_ties)
 
-        st.write("Create a dashboard from SPARQL JSON results.")
+        st.write("Create a dashboard from the resultant files.")
         st.caption("**Home Page** is always included.")
 
         with st.form("new_proj_from_json_form"):
@@ -156,7 +156,7 @@ def project_form(mode, *, json_dir: str | None = None):
             description = st.text_area("Project Description", key=f"project_description_{mode}")
 
             if not basenames:
-                st.warning("No JSON files detected. Upload or generate SPARQL results first.")
+                st.warning("No JSON files detected. Upload the files or generate Dashboard data first.")
                 disabled = True
             else:
                 disabled = False
@@ -526,7 +526,8 @@ def build_oml_form():
     
     if st.session_state.omluploaded:
         if st.session_state.build_code == 0:
-            st.success("✅ Build succeeded")
+            # st.success("✅ Build succeeded")
+            st.success("Your file was successfully processed", icon="✅")
         else:
             st.error(f"❌ Build failed (exit code {st.session_state.build_code})")
 
@@ -534,11 +535,12 @@ def build_oml_form():
         if st.session_state.build_log_path.exists():
             log_abs = st.session_state.build_log_path
             log_text = log_abs.read_text(encoding="utf‑8", errors="ignore")
-            with st.expander("🔍 View build log"):
-                st.code(log_text, language="bash")
+            # with st.expander("🔍 View build log"):
+            #     st.code(log_text, language="bash")
 
         if st.session_state.build_code == 0:
-            st.markdown("### 📝 Next Up -> SPARQL Queries")
+            # st.markdown("### 📝 Next Up -> SPARQL Queries")
+            st.markdown("### 📝 Next Up -> Generate data for your Dashboard")
 
             # 1️⃣  Ensure the folder exists
             SPARQL_DIR.mkdir(parents=True, exist_ok=True)
@@ -562,21 +564,22 @@ def build_oml_form():
                 sparql_files = list(SPARQL_DIR.glob("*.sparql"))
                 st.session_state.sparql_present = bool(len(sparql_files))
             
-            # 3️⃣  Show list of queries (if any)
-            if st.session_state.sparql_present:
-                with st.expander("**Queries that will be executed:**"):
-                    for f in sparql_files:
-                        st.markdown(f"- `{f.name}`")
+            # # 3️⃣  Show list of queries (if any)
+            # if st.session_state.sparql_present:
+            #     with st.expander("**Queries that will be executed:**"):
+            #         for f in sparql_files:
+            #             st.markdown(f"- `{f.name}`")
 
             # 4️⃣  Run‑query button (disabled if the folder is still empty)
             run_queries = st.button(
-                "🚀 Run SPARQL queries",
+                "🚀 Generate data for dashboard",
                 disabled=not st.session_state.sparql_present,
             )
 
             # 5️⃣  Execute and surface results/logs
             if run_queries:
-                with st.spinner("Running SPARQL queries…"):
+                # with st.spinner("Running SPARQL queries…"):
+                with st.spinner("Generating data..."):
                     q_result = sparql_query()
 
                 q_exit = q_result.get("exit_code", 1)
@@ -589,7 +592,8 @@ def build_oml_form():
 
             if st.session_state.query_run_exec:
                 if st.session_state.query_code == 0:
-                    st.success("✅ Queries completed without errors")
+                    # st.success("✅ Queries completed without errors")
+                    st.success("✅ Data generated without errors")
                 else:
                     st.error(f"❌ One or more queries failed (exit code {st.session_state.query_code})")
 
@@ -606,8 +610,8 @@ def build_oml_form():
 
                     json_files = [p for p in build_results_dir.rglob("*.json")]
                     if json_files:
-                        st.markdown("### 📊 Create a Dashboard from these results")
-                        if st.button("Use these results to create a dashboard", type="primary", icon="🧱"):
+                        st.markdown("### 📊 Create a Dashboard from the generated data")
+                        if st.button("Use the results to create a dashboard", icon="🧱"):
                             tmp = session_tmp_dir("sparql")
                             for p in json_files:
                                 shutil.copy2(p, tmp / p.name)
@@ -659,7 +663,8 @@ def build_oml_form():
                             logger.info(f"{allowed_views, suggested_views, chosen_profile, str(tmp)}")
                             st.rerun() # rerun to close current dialog and open the project creation form
                     else:
-                        st.info("No JSON results were generated. Upload or add SPARQL queries and re-run.")
+                        # st.info("No JSON results were generated. Upload or add SPARQL queries and re-run.")
+                        st.info("No JSON results were generated. Upload relevant files and re-run.")
 
                     # if json_files:
                     #     st.markdown("### 📊 Create a Dashboard from these results")
@@ -708,7 +713,7 @@ def required_files_for_view(view_name: str, profile_name: str | None = None):
 @st.dialog("New project from JSON files")
 def new_project_from_json_form():
     """Upload SPARQL JSON files, stage them in a temp dir, and reuse project_form(mode='from_uploads')."""
-    st.markdown("**Step 1 of 2** — Upload the SPARQL JSON results that will power your dashboard.")
+    st.markdown("Upload the JSON results that will power your dashboard.")
     uploaded = st.file_uploader(
         "Upload one or more .json files",
         type=["json"],

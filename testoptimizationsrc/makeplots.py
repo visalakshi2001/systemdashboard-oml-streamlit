@@ -91,57 +91,170 @@ def plot_scenario_heatmaps(tests, title, cell_size=10, fig_height=600):
 
     return fig
 
-def plot_sequence_dots(tests, title, cell_size=10, fig_height=600):
+# def plot_sequence_dots(tests, title, cell_size=10, fig_height=600):
     
-    # Extract ordered test IDs and their scenarios from tests
-    # test: [{id: "1", scenarios: ["3", "19"]}, {id: "2", scenarios: ["3", "19", "5"]}, ...]
-    # extract test id and the consequent scenario in separate lists
-    seq_ids = []
-    test_ids = []
-    for test in tests:
-        test_ids.extend([test['id']] * len(test['scenarios']))
-        seq_ids.extend(test['scenarios'])
+#     # Extract ordered test IDs and their scenarios from tests
+#     # test: [{id: "1", scenarios: ["3", "19"]}, {id: "2", scenarios: ["3", "19", "5"]}, ...]
+#     # extract test id and the consequent scenario in separate lists
+#     seq_ids = []
+#     test_ids = []
+#     for test in tests:
+#         test_ids.extend([test['id']] * len(test['scenarios']))
+#         seq_ids.extend(test['scenarios'])
 
-    fig = go.Figure(go.Scatter(
-        x=test_ids,
-        y=seq_ids,
-        mode='markers',
-        marker=dict(size=cell_size),
-    ))
+#     fig = go.Figure(go.Scatter(
+#         x=test_ids,
+#         y=seq_ids,
+#         mode='markers',
+#         marker=dict(size=cell_size),
+#     ))
+#     fig.update_layout(
+#         title=title,
+#         xaxis_title='Test ID (in execution order)',
+#         yaxis_title='Scenario ID',
+#         xaxis=dict(
+#             type='category', 
+#             categoryorder='array', 
+#             range=[-0.5, len(tests)],  # to center the labels
+#             categoryarray=test_ids, 
+#             showgrid=True,
+#             dtick=1,
+#             tick0=0,
+#             tickson='boundaries',
+#             tickangle=-90,
+#             tickfont=dict(size=8.5, color='black'),
+#             mirror="allticks",
+#         ),
+#         yaxis=dict(
+#             type='category', 
+#             categoryorder='array', 
+#             range=[-0.5, len(seq_ids)-0.5],  # to center the labels
+#             categoryarray=sorted(seq_ids), 
+#             autorange='reversed',
+#             showgrid=True,
+#             dtick=1,
+#             tick0=0,
+#             tickson='boundaries',
+#             mirror="allticks",
+#         ),
+#         showlegend=False,
+#         height=fig_height,
+#     )
+
+#     return fig
+import math, re
+_num_pat = re.compile(r"^([A-Za-z]+)(\d+)$")
+
+def _split_label(lbl: str):
+    """
+    Return (prefix, num_int) for labels like 'p1', 's12'.
+    If no match, returns (lbl, +inf) so it sorts last stably.
+    """
+    m = _num_pat.match(str(lbl))
+    if not m:
+        return (str(lbl), math.inf)
+    return (m.group(1), int(m.group(2)))
+
+def _order_scenarios(
+    seq_ids,
+    order_by = "alpha",
+    scenario_costs = None,
+    ascending = True,
+):
+    """Return a UNIQUE list of scenario ids, ordered per the chosen policy."""
+    uniq = list(dict.fromkeys(str(s) for s in seq_ids))  # preserve first-seen order then sort
+    if order_by == "alpha" or not scenario_costs:
+        # natural alpha-numeric sort: p1, p2, ..., p10, s1, s2, ...
+        return sorted(uniq, key=lambda s: _split_label(s))
+    # cost-based order; tie-break by prefix priority (p before s) then numeric
+    def key_cost(s: str):
+        cost = scenario_costs.get(s, math.inf)
+        prefix, num = _split_label(s)
+        prefix_pri = 0 if prefix.lower().startswith("p") else 1  # p before s/others
+        return (cost, prefix_pri, num, prefix.lower(), s)
+    return sorted(uniq, key=key_cost, reverse=not ascending)
+# --- end helpers ---
+
+def plot_sequence_dots(
+    tests,
+    title,
+    cell_size = 10,
+    fig_height = 600,
+    *,
+    order_by = "alpha",          # Step 1: ordering knob
+    scenario_costs = None,     # Step 1: costs map
+    ascending = True                                  # Step 1: direction
+):
+    """
+    Scatter of scenarios (y) vs test execution order (x).
+    - order_by: 'alpha' (default) or 'cost'
+    - scenario_costs: mapping like {'p1': 1, 's1': 1, ...} when order_by='cost'
+    - ascending: True => low cost first; False => high cost first
+    """
+    # ---- flatten data (Step 2) ----
+    x_vals = []
+    y_vals = []
+    test_order_unique = []
+    seen_tests = set()
+
+    for t in tests:
+        tid = str(t["id"])
+        if tid not in seen_tests:
+            test_order_unique.append(tid)
+            seen_tests.add(tid)
+        scens = [str(s) for s in t.get("scenarios", [])]
+        x_vals.extend([tid] * len(scens))
+        y_vals.extend(scens)
+
+    # ---- compute y order (Step 3) ----
+    y_cat = _order_scenarios(
+        y_vals,
+        order_by=order_by,
+        scenario_costs=scenario_costs,
+        ascending=ascending,
+    )
+
+    # ---- build figure (Step 4) ----
+    fig = go.Figure(
+        go.Scatter(
+            x=x_vals,
+            y=y_vals,
+            mode="markers",
+            marker=dict(size=cell_size),
+        )
+    )
+
     fig.update_layout(
         title=title,
-        xaxis_title='Test ID (in execution order)',
-        yaxis_title='Scenario ID',
+        height=fig_height,
+        showlegend=False,
         xaxis=dict(
-            type='category', 
-            categoryorder='array', 
-            range=[-0.5, len(tests)],  # to center the labels
-            categoryarray=test_ids, 
+            title="Test ID (in execution order)",
+            type="category",
+            categoryorder="array",
+            categoryarray=test_order_unique,   # honor real execution order
+            tickangle=-90,
+            tickfont=dict(size=8.5, color="black"),
             showgrid=True,
             dtick=1,
-            tick0=0,
-            tickson='boundaries',
-            tickangle=-90,
-            tickfont=dict(size=8.5, color='black'),
+            tickson="boundaries",
             mirror="allticks",
         ),
         yaxis=dict(
-            type='category', 
-            categoryorder='array', 
-            range=[-0.5, len(seq_ids)-0.5],  # to center the labels
-            categoryarray=sorted(seq_ids), 
-            autorange='reversed',
+            title="Scenario ID",
+            type="category",
+            categoryorder="array",
+            categoryarray=y_cat,               # <- ordered by cost or alpha
+            autorange="reversed",              # lowest-cost (first) at TOP
             showgrid=True,
             dtick=1,
-            tick0=0,
-            tickson='boundaries',
+            tickson="boundaries",
             mirror="allticks",
+            range=[-0.5, len(y_cat) - 0.5],
         ),
-        showlegend=False,
-        height=fig_height,
     )
-
     return fig
+
 
 def build_scenario_timeline(tests, title, cell_size=10, fig_height=600):
     """

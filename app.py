@@ -18,7 +18,7 @@ from utilities import _run_installation_if_streamlit_env, view_name_to_module_na
 
 
 
-st.set_page_config(page_title="SIE 523 Dashboards", page_icon="🛰️", layout="wide")
+st.set_page_config(page_title="Dashboard", page_icon="🛰️", layout="wide")
 
 def init_session():
     """Ensure all required session_state keys exist."""
