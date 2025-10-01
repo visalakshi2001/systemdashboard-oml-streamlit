@@ -81,7 +81,7 @@ def panel():
     # --- Case A: No projects yet → show Welcome page with 2 CTAs and stop ---
     if not projectlist:
         st.title("Welcome 👋")
-        st.caption("Create your first dashboard from an OML build or from SPARQL JSON results.")
+        st.caption("<span style='color:rgba(0,0,0,1); font-weight: 600;'>Create your first dashboard here!</span>", unsafe_allow_html=True)
 
 
         # Center the CTAs
@@ -98,7 +98,7 @@ def panel():
                 if st.button("New project using OML file", icon="🟪", use_container_width=True):
                     build_oml_form()  # defined in projectdetail.py
             with c2:
-                if st.button("New project using resultant JSON files", icon="🔣", use_container_width=True):
+                if st.button("New project using JSON files", icon="🔣", use_container_width=True):
                     new_project_from_json_form()
             # # ----------------------------
         
@@ -196,47 +196,6 @@ def show_tab(tab_name, project):
         else:
             st.info(f"{base}.json data is not available - upload it via **🪄 Edit Data** button")
      
-
-# def show_tab(tab_name, project):
-#     """
-#     Dispatch each tab to its own view module.
-#     Tabs not yet modularised fall back to a simple CSV preview + missing‑file message.
-#     """
-#     # ---- 1.  delegated views  ------------------------------------------------
-#     if tab_name == "Home Page":
-#         homepage.render(project)          # ./homepage.py
-#         return
-#     if tab_name == "Architecture":
-#         architecture.render(project)      # ./architecture.py
-#         return
-#     if tab_name == "Requirements":
-#         requirements.render(project)
-#         return
-#     if tab_name == "Test Facilities":
-#         testfacility.render(project)
-#         return
-#     if tab_name == "Test Strategy":
-#         teststrategy.render(project)
-#         return
-#     if tab_name == "Test Results":
-#         testresults.render(project)
-#         return
-#     if tab_name == "Warnings/Issues":
-#         issueswarnings.render(project)
-#         return
-
-
-#     # ---- 2.  generic fallback for other tabs  -------------------------------
-#     folder = project["folder"]
-#     for base in DATA_TIES[tab_name]:
-#         csv_path = os.path.join(folder, f"{base}.csv")
-#         if os.path.exists(csv_path):
-#             df = pd.read_csv(csv_path)
-#             st.dataframe(df, use_container_width=True)
-#         else:
-#             st.info(f"{base}.json data is not available - upload it via **🪄 Edit Data** button")     
-
-
 def main():
     projectlist = st.session_state['projectlist']
     currproject = st.session_state['currproject']

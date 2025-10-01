@@ -67,7 +67,7 @@ DASHBOARD_PROFILES = {
             "Test Facilities",
             "Test Strategy",
             "Test Results",
-            "Scenarios",
+            "Warnings/Issues",
         ],
         "module_prefix": None,  # use global view modules
         # Optional per-view data-ties overrides for this profile.
@@ -80,6 +80,7 @@ DASHBOARD_PROFILES = {
             "Test Strategy": ["TestStrategy", "TestEquipment", "TestFacilities"],
             "Test Results": ["TestResults"],
             "Home Page": ["TripleCount"],
+            "Warnings/Issues": [],
         },
     },
     "Test Optimization": {
@@ -260,8 +261,18 @@ def project_form(mode, *, json_dir: str | None = None):
                         "retained_allowed_views", "retained_suggested_views",
                     ]:
                         st.session_state.pop(k, None)
-                st.session_state["create_dashboard_from_retained"] = False  # reset flag
+                # reset flags
+                st.session_state["create_dashboard_from_retained"] = False  
                 st.session_state["create_dashboard_from_uploads"] = False
+                st.session_state.omluploaded = False
+                st.session_state.build_code = None
+                st.session_state.build_log_path = None
+                st.session_state.sparql_present = False
+                st.session_state.query_run_exec = False
+                st.session_state.query_code = None
+                st.session_state.query_log_path = None
+                st.session_state.query_results = None
+
                 st.toast(f"Dashboard **{project['name']}** created.")
                 st.rerun()
 
@@ -615,15 +626,12 @@ def build_oml_form():
                             tmp = session_tmp_dir("sparql")
                             for p in json_files:
                                 shutil.copy2(p, tmp / p.name)
-                            
-                            # ↓↓↓ ADD THIS BLOCK ↓↓↓
                             try:
                                 # chosen_profile is not yet known here, so pass None.
                                 # This will prefer the largest populated alias when both exist.
                                 consolidate_result_aliases(tmp, chosen_profile=None)
                             except Exception as e:
                                 logger.info(f"[build_oml_form] consolidate_result_aliases skipped: {e}")
-                            # ↑↑↑ ADD THIS BLOCK ↑↑↑
 
                             # detect which JSONs are populated and match to profiles
                             present_basenames = discover_populated_json_basenames(tmp)
